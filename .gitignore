@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+**/.env
+
+# Build outputs
+build/
+dist/
+*.pyc
+__pycache__/
+**/__pycache__/
+*.egg-info/
+.venv/
+venv/
+
+# Logs
+logs/
+*.log
+**/*.log
+
+# OS files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Docker volumes / runtime data
+backend/uploads/
+ai-service/models/
+
+# Mobile build artifacts
+HostelCareApp/android/.gradle/
+HostelCareApp/android/app/build/
+HostelCareApp/android/build/
+HostelCareApp/ios/build/
+HostelCareApp/ios/Pods/
+mobile-src/android/.gradle/
+mobile-src/android/app/build/
+mobile-src/android/build/
+mobile-src/ios/build/
+mobile-src/ios/Pods/
+
+# SSL certificates (local dev only)
+certbot/conf/live/
+certbot/conf/archive/
+certbot/conf/renewal/
+nginx/ssl/

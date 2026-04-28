@@ -1,0 +1,36 @@
+{"level":"info","message":"PostgreSQL connected","service":"ilgc-api","timestamp":"2026-04-28 12:00:43.824"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:43.827"}
+{"error":"Connection is closed.","level":"warn","message":"Redis connection failed, caching disabled","service":"ilgc-api","timestamp":"2026-04-28 12:00:43.828"}
+{"checkIntervalMs":300000,"initialDelayMs":20000,"level":"info","message":"Starting supervisor reminder scheduler","reminderEveryHours":2,"service":"ilgc-api","timestamp":"2026-04-28 12:00:43.829"}
+{"env":"development","level":"info","message":"ILGC Tracker API v2.0 running","pid":86459,"port":3001,"service":"ilgc-api","timestamp":"2026-04-28 12:00:43.830"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:44.032"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:44.436"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:45.041"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:45.845"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:46.849"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:48.053"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:49.456"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:51.060"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:52.863"}
+{"error":"","level":"warn","message":"Redis error","service":"ilgc-api","timestamp":"2026-04-28 12:00:54.868"}
+{"level":"error","message":"Redis: Max retry attempts reached","service":"ilgc-api","timestamp":"2026-04-28 12:00:54.868"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 12:01:03.877"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 12:01:03.877"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543220","service":"ilgc-api","supervisorId":"add930ca-55f4-4128-97b0-d79240fc795b","timestamp":"2026-04-28 12:01:03.878"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543221","service":"ilgc-api","supervisorId":"af56583e-8364-4e57-aa95-eac370a19ef4","timestamp":"2026-04-28 12:01:03.878"}
+{"dueReminders":2,"level":"info","message":"Supervisor reminder cycle completed","service":"ilgc-api","smsSent":0,"timestamp":"2026-04-28 12:01:03.878"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 14:01:47.475"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 14:01:47.478"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543220","service":"ilgc-api","supervisorId":"add930ca-55f4-4128-97b0-d79240fc795b","timestamp":"2026-04-28 14:01:47.479"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543221","service":"ilgc-api","supervisorId":"af56583e-8364-4e57-aa95-eac370a19ef4","timestamp":"2026-04-28 14:01:47.480"}
+{"dueReminders":2,"level":"info","message":"Supervisor reminder cycle completed","service":"ilgc-api","smsSent":0,"timestamp":"2026-04-28 14:01:47.480"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 16:17:28.766"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 16:17:28.767"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543220","service":"ilgc-api","supervisorId":"add930ca-55f4-4128-97b0-d79240fc795b","timestamp":"2026-04-28 16:17:28.767"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543221","service":"ilgc-api","supervisorId":"af56583e-8364-4e57-aa95-eac370a19ef4","timestamp":"2026-04-28 16:17:28.767"}
+{"dueReminders":2,"level":"info","message":"Supervisor reminder cycle completed","service":"ilgc-api","smsSent":0,"timestamp":"2026-04-28 16:17:28.767"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 18:21:54.536"}
+{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 18:21:54.537"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543220","service":"ilgc-api","supervisorId":"add930ca-55f4-4128-97b0-d79240fc795b","timestamp":"2026-04-28 18:21:54.537"}
+{"error":"SMS provider is not configured","level":"warn","message":"Supervisor reminder SMS failed","phone":"+91-9876543221","service":"ilgc-api","supervisorId":"af56583e-8364-4e57-aa95-eac370a19ef4","timestamp":"2026-04-28 18:21:54.538"}
+{"dueReminders":2,"level":"info","message":"Supervisor reminder cycle completed","service":"ilgc-api","smsSent":0,"timestamp":"2026-04-28 18:21:54.538"}
