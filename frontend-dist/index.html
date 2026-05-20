@@ -2255,8 +2255,9 @@
                     <div class="admin-wr-checklists-filters">
                         <div class="form-group">
                             <label for="adminWrBuilding">Building</label>
-                            <select id="adminWrBuilding" disabled>
+                            <select id="adminWrBuilding" onchange="loadAdminWashroomChecklists()">
                                 <option value="H2 Hostel">H2 Hostel</option>
+                                <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -2732,6 +2733,20 @@
             <div class="modal-footer">
                 <button class="btn btn-outline" onclick="closeWashroomChecklistModal()">Cancel</button>
                 <button class="btn btn-primary" id="washroomChecklistSubmitBtn" onclick="submitWashroomChecklist()">Submit Checklist</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Checklist Detail Modal -->
+    <div class="modal-overlay" id="adminChecklistDetailModal" onclick="if(event.target===this)closeAdminChecklistDetailModal()">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-header">
+                <h3>📋 Checklist Details</h3>
+                <button class="modal-close" type="button" onclick="closeAdminChecklistDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="adminChecklistDetailBody" style="max-height:70vh;overflow-y:auto;"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" type="button" onclick="closeAdminChecklistDetailModal()">Close</button>
             </div>
         </div>
     </div>
@@ -4276,6 +4291,7 @@
 
         async function findWashroomForFacilityRow(row) {
             if (!WASHROOM_FACILITY_TYPES.has(row.facility_type)) return null;
+            if (row.building !== 'H2 Hostel') return null;
             const floorNum = row.floor === 'G' ? 0 : parseInt(row.floor, 10);
             if (isNaN(floorNum)) return null;
             const washrooms = await getH2Washrooms();
@@ -4341,6 +4357,14 @@
                 const facilityForm = new FormData();
                 facilityForm.append('cleaned', 'yes');
                 facilityForm.append('photo', photoFile, photoFile.name);
+                if (!washroom) {
+                    // A1: no washroom_checklists entry — store full checklist in facility_updates
+                    facilityForm.append('items', JSON.stringify(checklistData));
+                    for (const [key, blob] of Object.entries(washroomItemBlobs)) {
+                        const f = new File([blob], `washroom-${key}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+                        facilityForm.append(`photo_${key}`, f, f.name);
+                    }
+                }
                 const dbUpdated = await api.uploadPut(`/facilities/${encodeURIComponent(row.id)}`, facilityForm);
                 if (dbUpdated?.photo_url) photoUrl = dbUpdated.photo_url;
             }
@@ -4521,6 +4545,8 @@
             if (isWashroomType) {
                 const wrFloor = document.getElementById('adminWrFloor');
                 if (wrFloor) wrFloor.value = floor;
+                const wrBuilding = document.getElementById('adminWrBuilding');
+                if (wrBuilding) wrBuilding.value = activeFacilityBuilding;
                 loadAdminWashroomChecklists();
             }
 
@@ -4630,29 +4656,42 @@
                 // washrooms.floor is integer; convert 'G'→0, '1'→1, etc.
                 const rawFloor = (document.getElementById('adminWrFloor') || {}).value || '';
                 const date = (document.getElementById('adminWrDate') || {}).value || '';
-                const params = new URLSearchParams({ building: activeFacilityBuilding });
+                const wrBuildingEl = document.getElementById('adminWrBuilding');
+                const wrBuilding = (wrBuildingEl && wrBuildingEl.value) ? wrBuildingEl.value : activeFacilityBuilding;
+                const params = new URLSearchParams({ building: wrBuilding });
                 if (rawFloor !== '') {
                     const floorNum = rawFloor === 'G' ? '0' : rawFloor;
                     params.set('floor', floorNum);
                 }
                 if (date) params.set('date', date);
-                const rows = await api.get(`/washrooms/checklists?${params.toString()}`);
+                const isH2 = wrBuilding === 'H2 Hostel';
+                const endpoint = isH2
+                    ? `/washrooms/checklists?${params.toString()}`
+                    : `/facilities/washroom-updates?${params.toString()}`;
+                const rows = await api.get(endpoint);
                 renderAdminWashroomChecklists(rows);
             } catch (e) {
                 container.innerHTML = `<p style="color:var(--danger);padding:16px;">Failed to load checklists: ${escapeHtml(e.message)}</p>`;
             }
         }
 
-        function renderWrChecklistPhotos(checklistItems) {
-            if (!checklistItems) return '—';
-            const photoLinks = Object.entries(checklistItems)
-                .filter(([, v]) => v.completed && v.photo_url)
-                .map(([key, v]) => {
-                    const itemLabel = WASHROOM_CHECKLIST_ITEMS.find(i => i.key === key)?.label || key;
-                    const url = facilityPhotoUrl(v.photo_url);
-                    const safe = escapeHtml(url);
-                    return `<button class="facility-photo-link" type="button" title="${escapeHtml(itemLabel)}" onclick="openFacilityPhotoLightbox('${safe}')">📷 ${escapeHtml(itemLabel)}</button>`;
-                });
+        function renderWrChecklistPhotos(row) {
+            const photoLinks = [];
+            if (row.checklist_items) {
+                Object.entries(row.checklist_items)
+                    .filter(([, v]) => v.completed && v.photo_url)
+                    .forEach(([key, v]) => {
+                        const itemLabel = WASHROOM_CHECKLIST_ITEMS.find(i => i.key === key)?.label || key;
+                        const url = facilityPhotoUrl(v.photo_url);
+                        const safe = escapeHtml(url);
+                        photoLinks.push(`<button class="facility-photo-link" type="button" title="${escapeHtml(itemLabel)}" onclick="openFacilityPhotoLightbox('${safe}')">📷 ${escapeHtml(itemLabel)}</button>`);
+                    });
+            }
+            if (row.photo_url && photoLinks.length === 0) {
+                const url = facilityPhotoUrl(row.photo_url);
+                const safe = escapeHtml(url);
+                photoLinks.push(`<button class="facility-photo-link" type="button" title="Photo proof" onclick="openFacilityPhotoLightbox('${safe}')">📷 Photo</button>`);
+            }
             return photoLinks.length ? photoLinks.join('') : '—';
         }
 
@@ -4663,22 +4702,22 @@
                 container.innerHTML = '<p style="color:var(--text-muted);padding:16px;text-align:center;">No checklist submissions found.</p>';
                 return;
             }
-            const bodyRows = rows.map(row => {
+            adminChecklistDetailRows = rows;
+            const bodyRows = rows.map((row, i) => {
                 const label = row.washroom_label
                     ? escapeHtml(row.washroom_label)
                     : `${escapeHtml(row.building || '')} F${escapeHtml(String(row.floor || ''))} ${escapeHtml(row.direction || '')}`;
                 const submittedAt = row.submitted_at ? formatFacilityDateTime(row.submitted_at) : '—';
                 const submittedBy = row.supervisor_name ? escapeHtml(row.supervisor_name) : '—';
-                const photosCell = renderWrChecklistPhotos(row.checklist_items);
                 const checklistCell = renderAdminChecklist(row);
                 const notes = row.notes ? escapeHtml(row.notes) : '—';
                 return `<tr>
                     <td>${label}</td>
                     <td>${submittedAt}</td>
                     <td>${submittedBy}</td>
-                    <td style="display:flex;flex-wrap:wrap;gap:4px;">${photosCell}</td>
                     <td class="admin-checklist-cell">${checklistCell}</td>
                     <td class="facility-comment-cell">${notes}</td>
+                    <td><button class="btn btn-outline btn-sm" type="button" onclick="openAdminChecklistDetail(${i})">View</button></td>
                 </tr>`;
             }).join('');
             container.innerHTML = `
@@ -4689,15 +4728,99 @@
                                 <th>Washroom</th>
                                 <th>Submitted At</th>
                                 <th>Submitted By</th>
-                                <th>Photos (Yes items)</th>
                                 <th>Checklist</th>
                                 <th>Notes</th>
+                                <th>Details</th>
                             </tr>
                         </thead>
                         <tbody>${bodyRows}</tbody>
                     </table>
                 </div>
             `;
+        }
+
+        let adminChecklistDetailRows = [];
+
+        function openAdminChecklistDetail(index) {
+            const row = adminChecklistDetailRows[index];
+            if (!row) return;
+            const body = document.getElementById('adminChecklistDetailBody');
+            if (!body) return;
+
+            const header = `
+                <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+                    <div style="font-weight:600;font-size:1rem;margin-bottom:4px;">${escapeHtml(row.washroom_label || 'Unknown Washroom')}</div>
+                    <div style="font-size:0.85rem;color:var(--text-muted);">
+                        Submitted by: <strong>${escapeHtml(row.supervisor_name || '—')}</strong>
+                        &nbsp;|&nbsp;
+                        ${row.submitted_at ? formatFacilityDateTime(row.submitted_at) : '—'}
+                    </div>
+                </div>
+            `;
+
+            let itemsHtml = '';
+            if (row.checklist_items) {
+                const items = typeof row.checklist_items === 'string'
+                    ? JSON.parse(row.checklist_items)
+                    : row.checklist_items;
+                const labels = {
+                    floor_mopping:    'Floor Mopped',
+                    sink_cleaning:    'Sinks Cleaned',
+                    dustbin_cleared:  'Dustbin Cleared',
+                    soap_refill:      'Soaps Refilled',
+                    tissue_refill:    'Tissue Restocked',
+                    sanitizer_refill: 'Sanitizer Refilled',
+                };
+                itemsHtml = '<div style="display:flex;flex-direction:column;gap:8px;">';
+                for (const [key, label] of Object.entries(labels)) {
+                    const entry = items[key];
+                    if (!entry) continue;
+                    const done = entry.completed;
+                    let extraHtml = '';
+                    if (done && entry.photo_url) {
+                        const safe = escapeHtml(facilityPhotoUrl(entry.photo_url));
+                        extraHtml = `
+                            <img src="${safe}" alt="${escapeHtml(label)}" style="margin-top:8px;max-width:100%;max-height:140px;border-radius:6px;cursor:pointer;object-fit:cover;" onclick="openFacilityPhotoLightbox('${safe}')" onerror="this.style.display='none'">
+                        `;
+                    } else if (!done && entry.comment) {
+                        extraHtml = `<div style="font-size:0.83rem;color:var(--text-muted);margin-top:4px;font-style:italic;">"${escapeHtml(entry.comment)}"</div>`;
+                    }
+                    itemsHtml += `
+                        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:6px;background:var(--bg-secondary,#1e1e2e);">
+                            <span style="font-size:1.1rem;flex-shrink:0;margin-top:2px;">${done ? '✅' : '❌'}</span>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-weight:500;">${escapeHtml(label)}</div>
+                                ${extraHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+                itemsHtml += '</div>';
+            } else {
+                const statusColor = row.notes && row.notes.includes('✓') ? 'var(--success,#4caf50)' : 'var(--danger,#f44336)';
+                const photoHtml = row.photo_url ? (() => {
+                    const safe = escapeHtml(facilityPhotoUrl(row.photo_url));
+                    return `<img src="${safe}" alt="Proof photo" style="margin-top:8px;max-width:100%;max-height:180px;border-radius:6px;cursor:pointer;object-fit:cover;" onclick="openFacilityPhotoLightbox('${safe}')" onerror="this.style.display='none'">`;
+                })() : '';
+                const commentHtml = row.comment
+                    ? `<div style="font-size:0.83rem;color:var(--text-muted);margin-top:6px;font-style:italic;">"${escapeHtml(row.comment)}"</div>`
+                    : '';
+                itemsHtml = `
+                    <div style="padding:10px 12px;border-radius:6px;background:var(--bg-secondary,#1e1e2e);">
+                        <div style="font-weight:600;font-size:1rem;color:${statusColor};">${escapeHtml(row.notes || '—')}</div>
+                        ${photoHtml}${commentHtml}
+                    </div>
+                `;
+            }
+
+            body.innerHTML = header + itemsHtml;
+            const modal = document.getElementById('adminChecklistDetailModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeAdminChecklistDetailModal() {
+            const modal = document.getElementById('adminChecklistDetailModal');
+            if (modal) modal.classList.remove('active');
         }
 
         function openFacilityPhotoLightbox(photoUrl) {

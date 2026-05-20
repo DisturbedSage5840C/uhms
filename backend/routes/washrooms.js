@@ -212,6 +212,7 @@ router.post('/:id/checklist', requireRole('supervisor'), checklistUpload.any(), 
                 photo_url: file ? `/uploads/${file.filename}` : null,
                 photo_filename: file ? file.filename : null,
                 completed_at: completed ? new Date().toISOString() : null,
+                comment: !completed ? (String(incoming.comment || '').trim() || null) : null,
             };
         });
 
