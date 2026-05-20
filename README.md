@@ -8,18 +8,18 @@ UHMS turns hygiene operations into a measurable, auditable system:
 
 - Multi-role operations across Admin, Supervisor, Cleaning Staff, and Student/Faculty
 - Building-floor-direction washroom tracking with supply visibility
-- Rule-based complaint categorisation and priority analysis (12 categories, urgency detection, sentiment)
-- Supervisor washroom checklists with per-item completion and camera proof
-- H2 Hostel facility tracker with per-item cleaning photo log and admin checklist view
-- Supervisor reminders and staff coordination
-- Web platform with Python HTTP server for local serving
+- Rule-based complaint analysis with 12 categories, urgency detection, and sentiment scoring
+- Supervisor washroom checklists with per-item photo proof and admin oversight
+- H2 Hostel facility tracker with per-item cleaning verification and photo log
+- Supervisor reminders for consumption-based restocking and task coordination
+- Single-page web application with built-in HTTP server for local deployment
 
 ## Product Snapshot
 
 ### Core Modules
 
 - Authentication and role-based dashboards
-- Complaints lifecycle with AI-assisted metadata and media evidence
+- Complaints lifecycle with rule-based analysis metadata and photo evidence
 - Washroom status and consumables monitoring (soap, tissue, sanitizer levels)
 - Supervisor washroom checklists with per-item completion and photo proof
 - H2 Hostel facility update log (rooms, washrooms, appliances) with admin view
