@@ -113,6 +113,29 @@ router.get('/by-building', async (req, res, next) => {
     }
 });
 
+// Get all washroom checklists (admin/supervisor view)
+router.get('/checklists', requireRole('admin', 'supervisor'), async (req, res, next) => {
+    try {
+        const { building, floor, date } = req.query;
+        let query = db('washroom_checklists as wc')
+            .select('wc.*', 'u.name as supervisor_name', 'w.label as washroom_label', 'w.building', 'w.floor', 'w.direction')
+            .leftJoin('users as u', 'wc.supervisor_id', 'u.id')
+            .leftJoin('washrooms as w', 'wc.washroom_id', 'w.id')
+            .orderBy('wc.submitted_at', 'desc');
+        if (building) query = query.where('w.building', building);
+        if (floor !== undefined && floor !== '') query = query.where('w.floor', parseInt(floor, 10));
+        if (date) query = query.whereRaw('DATE(wc.submitted_at) = ?', [date]);
+        const rows = await query.limit(100);
+        const normalized = rows.map(r => ({
+            ...r,
+            checklist_items: typeof r.checklist_items === 'string' ? JSON.parse(r.checklist_items) : r.checklist_items,
+        }));
+        res.json(normalized);
+    } catch (error) {
+        next(error);
+    }
+});
+
 // Get single washroom
 router.get('/:id', async (req, res, next) => {
     try {

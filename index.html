@@ -1417,6 +1417,172 @@
             background: var(--accent-glow);
         }
 
+        .admin-checklist-cell { display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; }
+
+        /* Pantry section grouping */
+        .pantry-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: 3px solid #f59e0b;
+            border-radius: var(--radius);
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .pantry-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .pantry-section-header:hover {
+            background: var(--accent-glow);
+        }
+
+        .pantry-section-header span:last-child {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .pantry-toggle-icon {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .pantry-section.collapsed .pantry-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .pantry-section-content {
+            padding: 12px 18px 6px;
+        }
+
+        .pantry-section.collapsed .pantry-section-content {
+            display: none;
+        }
+
+        /* Washroom cleaning checklist items */
+        .wr-checklist-row {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .wr-checklist-row:last-child {
+            border-bottom: 0;
+        }
+
+        .wr-checklist-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .wr-checklist-controls {
+            display: flex;
+            gap: 18px;
+        }
+
+        .wr-radio-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .wr-radio-label input[type="radio"] {
+            accent-color: var(--accent);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        .wr-checklist-comment-wrap {
+            margin-top: 8px;
+        }
+
+        .wr-checklist-comment {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+
+        .wr-checklist-comment:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .wr-item-photo-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        .wr-item-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        .admin-wr-checklists-section {
+            margin-top: 24px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .admin-wr-checklists-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: inherit;
+            text-align: left;
+        }
+
+        .admin-wr-checklists-header:hover {
+            background: var(--bg-hover);
+        }
+
+        .admin-wr-checklists-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            padding: 16px 18px 0;
+            background: var(--bg-secondary);
+        }
+
         .facility-table select {
             width: 96px;
             padding: 7px 9px;
@@ -2077,6 +2243,48 @@
             <div id="adminFacilityLogContainer">
                 <!-- Facility update log renders here -->
             </div>
+
+            <!-- Washroom Checklists collapsible section -->
+            <div class="admin-wr-checklists-section" id="adminWrChecklistsSection" style="display:none;">
+                <button class="admin-wr-checklists-header" type="button" onclick="toggleAdminWrChecklists()">
+                    <span>Washroom Checklists</span>
+                    <span id="adminWrChecklistsChevron">▼</span>
+                </button>
+                <div id="adminWrChecklistsBody" style="display:none;">
+                    <div class="admin-wr-checklists-filters">
+                        <div class="form-group">
+                            <label for="adminWrBuilding">Building</label>
+                            <select id="adminWrBuilding" disabled>
+                                <option value="H2 Hostel">H2 Hostel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminWrFloor">Floor</label>
+                            <select id="adminWrFloor">
+                                <option value="">All</option>
+                                <option value="G">G</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminWrDate">Date</label>
+                            <input type="date" id="adminWrDate" />
+                        </div>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="loadAdminWashroomChecklists()">Load</button>
+                    </div>
+                    <div id="adminWrChecklistsContainer">
+                        <!-- checklist rows render here -->
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- Staff Dashboard (Cleaning Staff) -->
@@ -2497,12 +2705,41 @@
         </div>
     </div>
 
+    <!-- Washroom Cleaning Checklist Modal -->
+    <div class="modal-overlay" id="washroomChecklistModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3>🚻 Washroom Cleaning Checklist</h3>
+                <button class="modal-close" onclick="closeWashroomChecklistModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;">Please confirm each item before marking this washroom as cleaned.</p>
+                <div id="washroomChecklistItems"></div>
+                <div id="washroomActiveCameraSection" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+                    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">📷 Photo for: <strong id="washroomActiveCameraLabel"></strong></p>
+                    <div class="checklist-camera-stage" id="washroomCameraStage">
+                        <video id="washroomCameraPreview" autoplay playsinline muted></video>
+                    </div>
+                    <canvas id="washroomPhotoCanvas" style="display:none;"></canvas>
+                    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-primary btn-sm" type="button" id="washroomCaptureBtn" onclick="captureWashroomItemPhoto()" disabled>📸 Capture</button>
+                        <button class="btn btn-outline btn-sm" type="button" onclick="cancelWashroomItemCamera()">✕ Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeWashroomChecklistModal()">Cancel</button>
+                <button class="btn btn-primary" id="washroomChecklistSubmitBtn" onclick="submitWashroomChecklist()">Submit Checklist</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
         // ──── API Client ────
-        const API_BASE = window.location.origin + '/api';
+        const API_BASE = 'http://localhost:3001/api';
         let authToken = localStorage.getItem('authToken');
 
         const api = {
@@ -3119,6 +3356,8 @@
             ],
         };
 
+        const H2_PANTRY_TYPES = new Set(['Refrigerator', 'Sink', 'Induction', 'Microwave', 'Water Cooler']);
+
         const washroomData = [
             // H1 — Hostel 1
             { id: 'H1-G-M', building: 'H1', floor: 'Ground', direction: '', label: 'Ground Floor WR (Male)', supplies: { tissues: 80, soap: 90, sanitizer: 70 }, lastRestocked: new Date(Date.now() - 3600000) },
@@ -3128,12 +3367,12 @@
             { id: 'H1-2-M', building: 'H1', floor: '2nd', direction: '', label: 'Floor 2 WR (Male)', supplies: { tissues: 10, soap: 5, sanitizer: 15 }, lastRestocked: new Date(Date.now() - 86400000 * 4) },
             { id: 'H1-2-F', building: 'H1', floor: '2nd', direction: '', label: 'Floor 2 WR (Female)', supplies: { tissues: 45, soap: 50, sanitizer: 30 }, lastRestocked: new Date(Date.now() - 86400000) },
             // H2 — Hostel 2 (with directional info: North/South wing)
-            { id: 'H2-G-N', building: 'H2', floor: 'Ground', direction: 'North Wing', label: 'Ground Floor WR (North Wing)', supplies: { tissues: 70, soap: 80, sanitizer: 90 }, lastRestocked: new Date(Date.now() - 7200000) },
-            { id: 'H2-G-S', building: 'H2', floor: 'Ground', direction: 'South Wing', label: 'Ground Floor WR (South Wing)', supplies: { tissues: 5, soap: 10, sanitizer: 0 }, lastRestocked: new Date(Date.now() - 86400000 * 3) },
-            { id: 'H2-1-N', building: 'H2', floor: '1st', direction: 'North Wing', label: 'Floor 1 WR (North Wing)', supplies: { tissues: 55, soap: 60, sanitizer: 45 }, lastRestocked: new Date(Date.now() - 28800000) },
-            { id: 'H2-1-S', building: 'H2', floor: '1st', direction: 'South Wing', label: 'Floor 1 WR (South Wing)', supplies: { tissues: 85, soap: 90, sanitizer: 80 }, lastRestocked: new Date(Date.now() - 14400000) },
-            { id: 'H2-2-N', building: 'H2', floor: '2nd', direction: 'North Wing', label: 'Floor 2 WR (North Wing)', supplies: { tissues: 40, soap: 35, sanitizer: 25 }, lastRestocked: new Date(Date.now() - 86400000) },
-            { id: 'H2-2-S', building: 'H2', floor: '2nd', direction: 'South Wing', label: 'Floor 2 WR (South Wing)', supplies: { tissues: 0, soap: 0, sanitizer: 5 }, lastRestocked: new Date(Date.now() - 86400000 * 4) },
+            { id: 'H2-G-Mess', building: 'H2', floor: 'Ground', direction: 'Near Mess', label: 'Ground Floor WR (Near Mess)', supplies: { tissues: 70, soap: 80, sanitizer: 90 }, lastRestocked: new Date(Date.now() - 7200000) },
+            { id: 'H2-G-Parking', building: 'H2', floor: 'Ground', direction: 'Near Parking Lot', label: 'Ground Floor WR (Near Parking Lot)', supplies: { tissues: 5, soap: 10, sanitizer: 0 }, lastRestocked: new Date(Date.now() - 86400000 * 3) },
+            { id: 'H2-1-L', building: 'H2', floor: '1st', direction: 'Left', label: 'Floor 1 WR (Left)', supplies: { tissues: 55, soap: 60, sanitizer: 45 }, lastRestocked: new Date(Date.now() - 28800000) },
+            { id: 'H2-1-R', building: 'H2', floor: '1st', direction: 'Right', label: 'Floor 1 WR (Right)', supplies: { tissues: 85, soap: 90, sanitizer: 80 }, lastRestocked: new Date(Date.now() - 14400000) },
+            { id: 'H2-2-L', building: 'H2', floor: '2nd', direction: 'Left', label: 'Floor 2 WR (Left)', supplies: { tissues: 40, soap: 35, sanitizer: 25 }, lastRestocked: new Date(Date.now() - 86400000) },
+            { id: 'H2-2-R', building: 'H2', floor: '2nd', direction: 'Right', label: 'Floor 2 WR (Right)', supplies: { tissues: 0, soap: 0, sanitizer: 5 }, lastRestocked: new Date(Date.now() - 86400000 * 4) },
             // H3 — Hostel 3
             { id: 'H3-G', building: 'H3', floor: 'Ground', direction: '', label: 'Ground Floor WR', supplies: { tissues: 95, soap: 88, sanitizer: 92 }, lastRestocked: new Date(Date.now() - 3600000) },
             { id: 'H3-1', building: 'H3', floor: '1st', direction: '', label: 'Floor 1 WR', supplies: { tissues: 50, soap: 55, sanitizer: 40 }, lastRestocked: new Date(Date.now() - 43200000) },
@@ -3162,7 +3401,7 @@
         // Work submissions (restocking/cleaning proof)
         let workSubmissions = [
             { id: 1, staffId: 1, staffName: 'Rajesh Kumar', washroom: 'H1-G-M', building: 'H1', task: 'restocking', notes: 'Refilled 4 tissue rolls, 2 soap dispensers', imageUrl: null, submittedAt: new Date(Date.now() - 7200000), photoTakenAt: new Date(Date.now() - 8100000), llmVerified: true, llmScore: 0.92, llmFeedback: 'Image metadata is fresh and aligned with the submission time.', supervisorApproved: true, supervisorId: 5 },
-            { id: 2, staffId: 2, staffName: 'Priya Sharma', washroom: 'H2-G-N', building: 'H2', task: 'restocking', notes: 'Refilled soap and sanitizer in North Wing ground floor', imageUrl: null, submittedAt: new Date(Date.now() - 3600000), photoTakenAt: new Date(Date.now() - 5400000), llmVerified: true, llmScore: 0.87, llmFeedback: 'Photo recency check passed.', supervisorApproved: null, supervisorId: 5 },
+            { id: 2, staffId: 2, staffName: 'Priya Sharma', washroom: 'H2-G-Mess', building: 'H2', task: 'restocking', notes: 'Refilled soap and sanitizer in Near Mess ground floor', imageUrl: null, submittedAt: new Date(Date.now() - 3600000), photoTakenAt: new Date(Date.now() - 5400000), llmVerified: true, llmScore: 0.87, llmFeedback: 'Photo recency check passed.', supervisorApproved: null, supervisorId: 5 },
             { id: 3, staffId: 1, staffName: 'Rajesh Kumar', washroom: 'H1-1-M', building: 'H1', task: 'cleaning', notes: 'Deep cleaned washroom, mopped floor, cleaned mirrors', imageUrl: null, submittedAt: new Date(Date.now() - 1800000), photoTakenAt: new Date(Date.now() - 86400000 * 3), llmVerified: false, llmScore: 0.34, llmFeedback: 'Photo appears old based on metadata. Supervisor review required.', supervisorApproved: null, supervisorId: 5 },
             { id: 4, staffId: 3, staffName: 'Amit Patel', washroom: 'H3-G', building: 'H3', task: 'restocking', notes: 'Restocked tissues (6 rolls), soap (3 dispensers), sanitizer (2)', imageUrl: null, submittedAt: new Date(Date.now() - 900000), photoTakenAt: new Date(Date.now() - 1500000), llmVerified: true, llmScore: 0.95, llmFeedback: 'Image metadata and visual checks passed.', supervisorApproved: null, supervisorId: 6 },
         ];
@@ -3193,9 +3432,9 @@
         // Demo complaints fallback
         const demoComplaints = [
             { id: 1, category: 'hygiene', room_number: 'H1 - Floor 2 East', description: 'No soap in washroom for 3 days. Tissue dispensers also empty. This is unacceptable for hygiene standards.', status: 'pending', priority: 'high', created_at: new Date(Date.now() - 86400000).toISOString(), resident_name: 'Student One', resident_id: 'r1', image_url: null, ai_analysis: null },
-            { id: 2, category: 'cleaning', room_number: 'H2 - Ground Floor South Wing', description: 'Washroom not cleaned for 2 days. Floor is dirty and smells bad.', status: 'in-progress', priority: 'high', created_at: new Date(Date.now() - 172800000).toISOString(), resident_name: 'Student One', resident_id: 'r1', image_url: null, ai_analysis: null },
+            { id: 2, category: 'cleaning', room_number: 'H2 - Ground Floor Near Parking Lot', description: 'Washroom not cleaned for 2 days. Floor is dirty and smells bad.', status: 'in-progress', priority: 'high', created_at: new Date(Date.now() - 172800000).toISOString(), resident_name: 'Student One', resident_id: 'r1', image_url: null, ai_analysis: null },
             { id: 3, category: 'hygiene', room_number: 'Academic Block - Floor 1', description: 'Sanitizer dispenser broken. No hand soap available.', status: 'resolved', priority: 'medium', created_at: new Date(Date.now() - 259200000).toISOString(), resident_name: 'Faculty Member', resident_id: 'r2', image_url: null, ai_analysis: null },
-            { id: 4, category: 'false_reporting', room_number: 'H2 - Floor 2 North Wing', description: 'Staff uploaded old photo as proof of restocking but washroom still has no tissues. Photo metadata shows it was taken 3 days ago.', status: 'pending', priority: 'urgent', created_at: new Date(Date.now() - 43200000).toISOString(), resident_name: 'Student One', resident_id: 'r1', image_url: null, ai_analysis: null },
+            { id: 4, category: 'false_reporting', room_number: 'H2 - Floor 2 Left', description: 'Staff uploaded old photo as proof of restocking but washroom still has no tissues. Photo metadata shows it was taken 3 days ago.', status: 'pending', priority: 'urgent', created_at: new Date(Date.now() - 43200000).toISOString(), resident_name: 'Student One', resident_id: 'r1', image_url: null, ai_analysis: null },
             { id: 5, category: 'plumbing', room_number: 'H3 - Floor 2', description: 'Soap dispenser is leaking, wasting liquid soap. Needs repair.', status: 'in-progress', priority: 'medium', created_at: new Date(Date.now() - 129600000).toISOString(), resident_name: 'Student Three', resident_id: 'r3', image_url: null, ai_analysis: null }
         ];
 
@@ -3468,7 +3707,8 @@
         function facilityPhotoUrl(photoUrl) {
             if (!photoUrl) return '';
             if (/^(blob:|data:|https?:)/i.test(photoUrl)) return photoUrl;
-            return `${window.location.origin}${photoUrl.startsWith('/') ? photoUrl : `/${photoUrl}`}`;
+            const base = API_BASE.replace('/api', '');
+            return `${base}${photoUrl.startsWith('/') ? photoUrl : `/${photoUrl}`}`;
         }
 
         function facilityQuery(params) {
@@ -3480,18 +3720,23 @@
 
         function generateFacilityFallbackRows(floor) {
             const config = H2_FACILITY_CONFIG[floor] || [];
-            return config.flatMap(({ type, count }) => Array.from({ length: count }, (_, index) => ({
-                id: `local-${floor}-${facilitySlug(type)}-${index + 1}`,
-                building: H2_BUILDING_NAME,
-                floor,
-                facility_type: type,
-                facility_number: index + 1,
-                cleaned: null,
-                photo_url: null,
-                comment: null,
-                last_updated: null,
-                updated_by: null,
-            })));
+            return config.flatMap(({ type, count }) => Array.from({ length: count }, (_, index) => {
+                const facilityNumber = type === 'Room'
+                    ? `${floor}${String(index + 1).padStart(2, '0')}`
+                    : index + 1;
+                return {
+                    id: `local-${floor}-${facilitySlug(type)}-${index + 1}`,
+                    building: H2_BUILDING_NAME,
+                    floor,
+                    facility_type: type,
+                    facility_number: facilityNumber,
+                    cleaned: null,
+                    photo_url: null,
+                    comment: null,
+                    last_updated: null,
+                    updated_by: null,
+                };
+            }));
         }
 
         function getFacilityFallbackRows(floor) {
@@ -3540,18 +3785,35 @@
             return `<img class="facility-photo-thumb" src="${safeUrl}" alt="Cleaning proof" onclick="openFacilityPhotoLightbox('${safeUrl}')">`;
         }
 
-        function renderSupervisorFacilityRows(rows) {
-            const container = document.getElementById('supervisorFacilityContainer');
-            const floor = document.getElementById('supervisorFacilityFloor')?.value || 'G';
-            if (!container) return;
+        const WASHROOM_FACILITY_TYPES = new Set(['Washroom', 'Washroom (Male)', 'Washroom (Female)', 'Washroom (Inclusive)']);
 
-            const groups = groupFacilityRows(rows, floor);
-            if (!groups.length) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏢</div><h3>No facilities found</h3><p>Select another floor to continue.</p></div>';
-                return;
+        function formatFacilityNumber(row) {
+            if (
+                (row.building === H2_BUILDING_NAME || row.building === 'H2 Hostel') &&
+                row.facility_type === 'Room'
+            ) {
+                const num = Number(row.facility_number);
+                // Already formatted (e.g. 101, 232) — return as-is
+                if (num >= 100) return String(num);
+                return `${row.floor}${String(num).padStart(2, '0')}`;
             }
+            return row.facility_number;
+        }
 
-            container.innerHTML = groups.map(([type, entries]) => `
+        function getWashroomDirectionLabel(facilityType, facilityNumber, floor) {
+            const num = Number(facilityNumber);
+            if (floor === 'G') {
+                if (num === 1) return 'Near Mess';
+                if (num === 2) return 'Near Parking Lot';
+            } else {
+                if (num === 1) return 'Left';
+                if (num === 2) return 'Right';
+            }
+            return String(facilityNumber);
+        }
+
+        function renderFacilitySection(type, entries, floor) {
+            return `
                 <section class="facility-section">
                     <div class="facility-section-header">
                         <h3>Facility Section: ${escapeHtml(type)}</h3>
@@ -3573,9 +3835,12 @@
                                 ${entries.map((row) => {
                                     const domId = facilityDomId(row.id);
                                     const cleaned = normalizeCleanedValue(row.cleaned);
+                                    const displayNum = WASHROOM_FACILITY_TYPES.has(row.facility_type)
+                                        ? escapeHtml(getWashroomDirectionLabel(row.facility_type, row.facility_number, floor))
+                                        : escapeHtml(String(formatFacilityNumber(row)));
                                     return `
                                         <tr id="facility-row-${domId}">
-                                            <td>${row.facility_number}</td>
+                                            <td>${displayNum}</td>
                                             <td>
                                                 <select id="facility-select-${domId}" data-previous="${cleaned}" onchange="handleFacilityCleanedChange('${escapeHtml(row.id)}', this)">
                                                     <option value="" ${cleaned === '' ? 'selected' : ''}>—</option>
@@ -3594,7 +3859,42 @@
                         </table>
                     </div>
                 </section>
-            `).join('');
+            `;
+        }
+
+        function renderSupervisorFacilityRows(rows) {
+            const container = document.getElementById('supervisorFacilityContainer');
+            const floor = document.getElementById('supervisorFacilityFloor')?.value || 'G';
+            if (!container) return;
+
+            const groups = groupFacilityRows(rows, floor);
+            if (!groups.length) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏢</div><h3>No facilities found</h3><p>Select another floor to continue.</p></div>';
+                return;
+            }
+
+            const isNonGroundFloor = floor !== 'G';
+            const pantryGroups = isNonGroundFloor ? groups.filter(([type]) => H2_PANTRY_TYPES.has(type)) : [];
+            const regularGroups = isNonGroundFloor ? groups.filter(([type]) => !H2_PANTRY_TYPES.has(type)) : groups;
+
+            let html = regularGroups.map(([type, entries]) => renderFacilitySection(type, entries, floor)).join('');
+
+            if (pantryGroups.length) {
+                const pantryItemCount = pantryGroups.reduce((sum, [, entries]) => sum + entries.length, 0);
+                html += `
+                    <section class="pantry-section">
+                        <div class="pantry-section-header" onclick="this.closest('.pantry-section').classList.toggle('collapsed')">
+                            <span>🍽️ Pantry</span>
+                            <span>${pantryItemCount} item${pantryItemCount === 1 ? '' : 's'} <span class="pantry-toggle-icon">▲</span></span>
+                        </div>
+                        <div class="pantry-section-content">
+                            ${pantryGroups.map(([type, entries]) => renderFacilitySection(type, entries, floor)).join('')}
+                        </div>
+                    </section>
+                `;
+            }
+
+            container.innerHTML = html;
         }
 
         async function renderSupervisorFacilityDashboard() {
@@ -3654,6 +3954,8 @@
             if (by) by.textContent = row.updated_by || '—';
         }
 
+        let pendingWashroomChecklistUpdate = null;
+
         function handleFacilityCleanedChange(rowId, select) {
             const row = findSupervisorFacilityRow(rowId);
             if (!row || !select) return;
@@ -3667,6 +3969,10 @@
             }
 
             if (nextValue === 'yes') {
+                if (WASHROOM_FACILITY_TYPES.has(row.facility_type)) {
+                    openWashroomCleaningChecklist(rowId, select, previousValue);
+                    return;
+                }
                 openFacilityLiveCamera(rowId, select, previousValue);
                 return;
             }
@@ -3679,6 +3985,275 @@
             }
 
             submitFacilityUpdate(rowId, 'no', null, select, previousValue, comment.trim());
+        }
+
+        const WASHROOM_CHECKLIST_ITEMS = [
+            { key: 'floor_mopping',      label: 'Floor Mopped' },
+            { key: 'sink_cleaning',      label: 'Sinks Cleaned' },
+            { key: 'dustbin_cleared',    label: 'Dustbin Cleared' },
+            { key: 'soap_refill',        label: 'Soaps Refilled' },
+            { key: 'tissue_refill',      label: 'Tissue Restocked' },
+            { key: 'sanitizer_refill',   label: 'Sanitizer Refilled' },
+        ];
+
+        function openWashroomCleaningChecklist(rowId, select, previousValue) {
+            pendingWashroomChecklistUpdate = { rowId, select, previousValue };
+            washroomItemBlobs = {};
+            activeWashroomCameraItemKey = null;
+            const modal = document.getElementById('washroomChecklistModal');
+            if (!modal) {
+                if (select) select.value = previousValue;
+                pendingWashroomChecklistUpdate = null;
+                showToast('Checklist modal not found');
+                return;
+            }
+
+            const container = document.getElementById('washroomChecklistItems');
+            if (container) {
+                container.innerHTML = WASHROOM_CHECKLIST_ITEMS.map(item => `
+                    <div class="wr-checklist-row" id="wr-item-row-${item.key}">
+                        <div class="wr-checklist-label">${escapeHtml(item.label)}</div>
+                        <div class="wr-checklist-controls">
+                            <label class="wr-radio-label">
+                                <input type="radio" name="wr_${item.key}" value="yes" onchange="onWrChecklistItemChange('${item.key}', 'yes')"> Yes
+                            </label>
+                            <label class="wr-radio-label">
+                                <input type="radio" name="wr_${item.key}" value="no" onchange="onWrChecklistItemChange('${item.key}', 'no')"> No
+                            </label>
+                        </div>
+                        <div class="wr-item-photo-row" id="wr-photo-row-${item.key}" style="display:none;">
+                            <img class="wr-item-thumb" id="wr-item-thumb-${item.key}" alt="Photo proof" onclick="openFacilityPhotoLightbox(this.src)">
+                            <button class="btn btn-outline btn-sm" type="button" onclick="retakeWashroomItemPhoto('${item.key}')">🔄 Retake</button>
+                        </div>
+                        <div class="wr-checklist-comment-wrap" id="wr-comment-wrap-${item.key}" style="display:none;">
+                            <input type="text" class="wr-checklist-comment" id="wr-comment-${item.key}" placeholder="Please comment on why this was not done">
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const cameraSection = document.getElementById('washroomActiveCameraSection');
+            if (cameraSection) cameraSection.style.display = 'none';
+            modal.classList.add('active');
+        }
+
+        function onWrChecklistItemChange(key, value) {
+            const commentWrap = document.getElementById(`wr-comment-wrap-${key}`);
+            const photoRow = document.getElementById(`wr-photo-row-${key}`);
+            if (value === 'no') {
+                if (activeWashroomCameraItemKey === key) cancelWashroomItemCamera();
+                delete washroomItemBlobs[key];
+                const thumb = document.getElementById(`wr-item-thumb-${key}`);
+                if (thumb) thumb.src = '';
+                if (photoRow) photoRow.style.display = 'none';
+                if (commentWrap) commentWrap.style.display = 'block';
+                const comment = document.getElementById(`wr-comment-${key}`);
+                if (comment) comment.value = '';
+            } else {
+                if (commentWrap) commentWrap.style.display = 'none';
+                const comment = document.getElementById(`wr-comment-${key}`);
+                if (comment) comment.value = '';
+                if (!washroomItemBlobs[key]) startWashroomItemCamera(key);
+            }
+        }
+
+        let activeWashroomCameraStream = null;
+        let washroomItemBlobs = {};
+        let activeWashroomCameraItemKey = null;
+        let h2WashroomCache = null;
+
+        function stopWashroomCameraStream() {
+            if (activeWashroomCameraStream) {
+                activeWashroomCameraStream.getTracks().forEach((t) => t.stop());
+                activeWashroomCameraStream = null;
+            }
+            const video = document.getElementById('washroomCameraPreview');
+            if (video) video.srcObject = null;
+        }
+
+        async function startWashroomItemCamera(key) {
+            if (activeWashroomCameraItemKey && activeWashroomCameraItemKey !== key) {
+                stopWashroomCameraStream();
+            }
+            activeWashroomCameraItemKey = key;
+            const label = WASHROOM_CHECKLIST_ITEMS.find(i => i.key === key)?.label || key;
+            const labelEl = document.getElementById('washroomActiveCameraLabel');
+            if (labelEl) labelEl.textContent = label;
+            const cameraSection = document.getElementById('washroomActiveCameraSection');
+            if (cameraSection) cameraSection.style.display = 'block';
+            const captureBtn = document.getElementById('washroomCaptureBtn');
+            if (captureBtn) captureBtn.disabled = true;
+            if (!navigator.mediaDevices?.getUserMedia) {
+                showToast('Camera not available on this device');
+                return;
+            }
+            stopWashroomCameraStream();
+            const video = document.getElementById('washroomCameraPreview');
+            try {
+                activeWashroomCameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: 'environment' } },
+                    audio: false,
+                });
+                if (video) { video.srcObject = activeWashroomCameraStream; await video.play(); }
+                if (captureBtn) captureBtn.disabled = false;
+            } catch (_err) {
+                stopWashroomCameraStream();
+                showToast('Camera access failed. Please allow camera permission.');
+            }
+        }
+
+        async function captureWashroomItemPhoto() {
+            const key = activeWashroomCameraItemKey;
+            if (!key) return;
+            const video = document.getElementById('washroomCameraPreview');
+            const canvas = document.getElementById('washroomPhotoCanvas');
+            if (!video || !canvas || !video.videoWidth || !video.videoHeight) {
+                showToast('Camera is still getting ready. Please try again.');
+                return;
+            }
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.92));
+            if (!blob) { showToast('Unable to capture photo'); return; }
+            washroomItemBlobs[key] = blob;
+            stopWashroomCameraStream();
+            activeWashroomCameraItemKey = null;
+            const cameraSection = document.getElementById('washroomActiveCameraSection');
+            if (cameraSection) cameraSection.style.display = 'none';
+            const thumb = document.getElementById(`wr-item-thumb-${key}`);
+            const photoRow = document.getElementById(`wr-photo-row-${key}`);
+            if (thumb) thumb.src = URL.createObjectURL(blob);
+            if (photoRow) photoRow.style.display = 'flex';
+        }
+
+        function retakeWashroomItemPhoto(key) {
+            delete washroomItemBlobs[key];
+            const thumb = document.getElementById(`wr-item-thumb-${key}`);
+            const photoRow = document.getElementById(`wr-photo-row-${key}`);
+            if (thumb) thumb.src = '';
+            if (photoRow) photoRow.style.display = 'none';
+            startWashroomItemCamera(key);
+        }
+
+        function cancelWashroomItemCamera() {
+            stopWashroomCameraStream();
+            activeWashroomCameraItemKey = null;
+            const cameraSection = document.getElementById('washroomActiveCameraSection');
+            if (cameraSection) cameraSection.style.display = 'none';
+        }
+
+        function closeWashroomChecklistModal() {
+            stopWashroomCameraStream();
+            washroomItemBlobs = {};
+            activeWashroomCameraItemKey = null;
+            const modal = document.getElementById('washroomChecklistModal');
+            if (modal) modal.classList.remove('active');
+            const cameraSection = document.getElementById('washroomActiveCameraSection');
+            if (cameraSection) cameraSection.style.display = 'none';
+            if (pendingWashroomChecklistUpdate) {
+                const { select, previousValue } = pendingWashroomChecklistUpdate;
+                if (select) select.value = previousValue;
+                pendingWashroomChecklistUpdate = null;
+            }
+        }
+
+        async function getH2Washrooms() {
+            if (h2WashroomCache) return h2WashroomCache;
+            const result = await api.get('/washrooms?building=H2%20Hostel');
+            if (Array.isArray(result)) h2WashroomCache = result;
+            return h2WashroomCache || [];
+        }
+
+        async function findWashroomForFacilityRow(row) {
+            if (!WASHROOM_FACILITY_TYPES.has(row.facility_type)) return null;
+            const floorNum = row.floor === 'G' ? 0 : parseInt(row.floor, 10);
+            if (isNaN(floorNum)) return null;
+            const washrooms = await getH2Washrooms();
+            // washrooms.floor is integer; sort by direction alphabetically so facility_number maps correctly
+            const floorWashrooms = washrooms
+                .filter(w => w.floor === floorNum)
+                .sort((a, b) => (a.direction || '').localeCompare(b.direction || ''));
+            const idx = Number(row.facility_number) - 1;
+            return floorWashrooms[idx] || null;
+        }
+
+        async function submitWashroomChecklist() {
+            if (!pendingWashroomChecklistUpdate) return;
+            const { rowId } = pendingWashroomChecklistUpdate;
+
+            const checklistData = {};
+            for (const item of WASHROOM_CHECKLIST_ITEMS) {
+                const selected = document.querySelector(`input[name="wr_${item.key}"]:checked`);
+                if (!selected) {
+                    showToast(`Please select Yes or No for "${item.label}"`);
+                    return;
+                }
+                const completed = selected.value === 'yes';
+                let comment = null;
+                if (!completed) {
+                    const commentInput = document.getElementById(`wr-comment-${item.key}`);
+                    comment = commentInput ? commentInput.value.trim() : '';
+                    if (!comment) {
+                        showToast(`Comment required for "${item.label}" marked No`);
+                        return;
+                    }
+                } else if (!washroomItemBlobs[item.key]) {
+                    showToast(`Photo required for "${item.label}" — please capture a photo`);
+                    return;
+                }
+                checklistData[item.key] = { completed, comment: completed ? null : comment };
+            }
+
+            const row = findSupervisorFacilityRow(rowId);
+            if (!row) return;
+            const submitBtn = document.getElementById('washroomChecklistSubmitBtn');
+            if (submitBtn) submitBtn.disabled = true;
+
+            const firstBlob = Object.values(washroomItemBlobs)[0] || null;
+            let photoUrl = firstBlob ? URL.createObjectURL(firstBlob) : null;
+
+            // Submit to washroom_checklists table
+            const washroom = await findWashroomForFacilityRow(row);
+            if (washroom) {
+                const formData = new FormData();
+                formData.append('items', JSON.stringify(checklistData));
+                formData.append('notes', 'Cleaning checklist submitted via facility tracker');
+                for (const [key, blob] of Object.entries(washroomItemBlobs)) {
+                    const file = new File([blob], `washroom-${key}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+                    formData.append(`photo_${key}`, file, file.name);
+                }
+                await api.upload(`/washrooms/${encodeURIComponent(washroom.id)}/checklist`, formData);
+            }
+
+            // Always update facility_updates so admin log reflects this submission
+            if (!String(row.id).startsWith('local-') && firstBlob) {
+                const photoFile = new File([firstBlob], 'washroom-proof.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+                const facilityForm = new FormData();
+                facilityForm.append('cleaned', 'yes');
+                facilityForm.append('photo', photoFile, photoFile.name);
+                const dbUpdated = await api.uploadPut(`/facilities/${encodeURIComponent(row.id)}`, facilityForm);
+                if (dbUpdated?.photo_url) photoUrl = dbUpdated.photo_url;
+            }
+
+            const modal = document.getElementById('washroomChecklistModal');
+            if (modal) modal.classList.remove('active');
+            stopWashroomCameraStream();
+            washroomItemBlobs = {};
+            activeWashroomCameraItemKey = null;
+            pendingWashroomChecklistUpdate = null;
+
+            const updated = {
+                ...row,
+                cleaned: 'yes',
+                photo_url: photoUrl,
+                last_updated: new Date().toISOString(),
+                updated_by: currentUser?.name || 'Supervisor',
+            };
+            updateSupervisorFacilityRow(updated);
+            updateFacilityRowCells(updated);
+            showToast('Washroom cleaning checklist submitted ✅', 'success');
+            if (submitBtn) submitBtn.disabled = false;
         }
 
         function stopFacilityCameraStream() {
@@ -3831,6 +4406,15 @@
             const container = document.getElementById('adminFacilityLogContainer');
             if (!container) return;
 
+            const isWashroomType = WASHROOM_FACILITY_TYPES.has(facilityType);
+            const wrSection = document.getElementById('adminWrChecklistsSection');
+            if (wrSection) wrSection.style.display = isWashroomType ? '' : 'none';
+            if (isWashroomType) {
+                const wrFloor = document.getElementById('adminWrFloor');
+                if (wrFloor) wrFloor.value = floor;
+                loadAdminWashroomChecklists();
+            }
+
             container.innerHTML = '<div class="facility-loading"><span class="spinner"></span> Loading facility update log...</div>';
             const query = facilityQuery({ building: H2_BUILDING_NAME, floor, facility_type: facilityType });
             const result = await api.get(`/facilities/log?${query}`);
@@ -3844,20 +4428,53 @@
             renderAdminFacilityLog(adminFacilityLogRows, floor, facilityType);
         }
 
+        function renderAdminChecklist(row) {
+            if (!row.checklist_items) return '—';
+            let items;
+            try {
+                items = typeof row.checklist_items === 'string'
+                    ? JSON.parse(row.checklist_items)
+                    : row.checklist_items;
+            } catch (_e) {
+                return '—';
+            }
+            const labels = {
+                floor_mopping:      'Floor',
+                sink_cleaning:      'Sinks',
+                dustbin_cleared:    'Dustbin',
+                soap_refill:        'Soaps',
+                tissue_refill:      'Tissue',
+                sanitizer_refill:   'Sanitizer',
+            };
+            return Object.entries(labels).map(([key, label]) => {
+                const entry = items[key];
+                if (!entry) return `<span title="No data">— ${label}</span>`;
+                const icon = entry.completed ? '✅' : '❌';
+                const tip = (!entry.completed && entry.comment) ? ` title="${escapeHtml(entry.comment)}"` : '';
+                return `<span${tip}>${icon} ${label}</span>`;
+            }).join('  ');
+        }
+
         function renderAdminFacilityLog(rows, floor, facilityType) {
             const container = document.getElementById('adminFacilityLogContainer');
             if (!container) return;
 
+            const isWashroomType = WASHROOM_FACILITY_TYPES.has(facilityType);
+
             const bodyRows = rows.map((row) => `
                 <tr>
-                    <td>${row.facility_number}</td>
+                    <td>${escapeHtml(String(formatFacilityNumber(row)))}</td>
                     <td>${formatCleanedLabel(row.cleaned)}</td>
                     <td>${renderFacilityPhotoCell(row, { admin: true })}</td>
                     <td class="facility-comment-cell">${row.comment ? escapeHtml(row.comment) : '—'}</td>
+                    ${isWashroomType ? `<td class="admin-checklist-cell">${renderAdminChecklist(row)}</td>` : ''}
                     <td>${formatFacilityDateTime(row.last_updated)}</td>
                     <td>${row.updated_by ? escapeHtml(row.updated_by) : '—'}</td>
                 </tr>
             `).join('');
+
+            const checklistTh = isWashroomType ? '<th>Checklist</th>' : '';
+            const colspan = isWashroomType ? '7' : '6';
 
             container.innerHTML = `
                 <section class="facility-section">
@@ -3872,16 +4489,105 @@
                                     <th>#</th>
                                     <th>Cleaned?</th>
                                     <th>Photo</th>
+                                    <th>Comment</th>
+                                    ${checklistTh}
                                     <th>Last Updated</th>
                                     <th>Updated By</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${bodyRows || '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">No updates recorded for this facility yet.</td></tr>'}
+                                ${bodyRows || `<tr><td colspan="${colspan}" style="text-align:center;color:var(--text-muted);padding:24px;">No updates recorded for this facility yet.</td></tr>`}
                             </tbody>
                         </table>
                     </div>
                 </section>
+            `;
+        }
+
+        function toggleAdminWrChecklists() {
+            const body = document.getElementById('adminWrChecklistsBody');
+            const chevron = document.getElementById('adminWrChecklistsChevron');
+            if (!body) return;
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            if (chevron) chevron.textContent = open ? '▼' : '▲';
+        }
+
+        async function loadAdminWashroomChecklists() {
+            const container = document.getElementById('adminWrChecklistsContainer');
+            if (!container) return;
+            container.innerHTML = '<p style="color:var(--text-muted);padding:16px;">Loading…</p>';
+            try {
+                // washrooms.floor is integer; convert 'G'→0, '1'→1, etc.
+                const rawFloor = (document.getElementById('adminWrFloor') || {}).value || '';
+                const date = (document.getElementById('adminWrDate') || {}).value || '';
+                const params = new URLSearchParams({ building: 'H2 Hostel' });
+                if (rawFloor !== '') {
+                    const floorNum = rawFloor === 'G' ? '0' : rawFloor;
+                    params.set('floor', floorNum);
+                }
+                if (date) params.set('date', date);
+                const rows = await api.get(`/washrooms/checklists?${params.toString()}`);
+                renderAdminWashroomChecklists(rows);
+            } catch (e) {
+                container.innerHTML = `<p style="color:var(--danger);padding:16px;">Failed to load checklists: ${escapeHtml(e.message)}</p>`;
+            }
+        }
+
+        function renderWrChecklistPhotos(checklistItems) {
+            if (!checklistItems) return '—';
+            const photoLinks = Object.entries(checklistItems)
+                .filter(([, v]) => v.completed && v.photo_url)
+                .map(([key, v]) => {
+                    const itemLabel = WASHROOM_CHECKLIST_ITEMS.find(i => i.key === key)?.label || key;
+                    const url = facilityPhotoUrl(v.photo_url);
+                    const safe = escapeHtml(url);
+                    return `<button class="facility-photo-link" type="button" title="${escapeHtml(itemLabel)}" onclick="openFacilityPhotoLightbox('${safe}')">📷 ${escapeHtml(itemLabel)}</button>`;
+                });
+            return photoLinks.length ? photoLinks.join('') : '—';
+        }
+
+        function renderAdminWashroomChecklists(rows) {
+            const container = document.getElementById('adminWrChecklistsContainer');
+            if (!container) return;
+            if (!rows || rows.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:16px;text-align:center;">No checklist submissions found.</p>';
+                return;
+            }
+            const bodyRows = rows.map(row => {
+                const label = row.washroom_label
+                    ? escapeHtml(row.washroom_label)
+                    : `${escapeHtml(row.building || '')} F${escapeHtml(String(row.floor || ''))} ${escapeHtml(row.direction || '')}`;
+                const submittedAt = row.submitted_at ? formatFacilityDateTime(row.submitted_at) : '—';
+                const submittedBy = row.supervisor_name ? escapeHtml(row.supervisor_name) : '—';
+                const photosCell = renderWrChecklistPhotos(row.checklist_items);
+                const checklistCell = renderAdminChecklist(row);
+                const notes = row.notes ? escapeHtml(row.notes) : '—';
+                return `<tr>
+                    <td>${label}</td>
+                    <td>${submittedAt}</td>
+                    <td>${submittedBy}</td>
+                    <td style="display:flex;flex-wrap:wrap;gap:4px;">${photosCell}</td>
+                    <td class="admin-checklist-cell">${checklistCell}</td>
+                    <td class="facility-comment-cell">${notes}</td>
+                </tr>`;
+            }).join('');
+            container.innerHTML = `
+                <div class="inventory-table-wrap">
+                    <table class="facility-table">
+                        <thead>
+                            <tr>
+                                <th>Washroom</th>
+                                <th>Submitted At</th>
+                                <th>Submitted By</th>
+                                <th>Photos (Yes items)</th>
+                                <th>Checklist</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>${bodyRows}</tbody>
+                    </table>
+                </div>
             `;
         }
 
@@ -6035,6 +6741,10 @@
                 }
                 if (this.id === 'facilityCameraModal') {
                     closeFacilityCameraModal();
+                    return;
+                }
+                if (this.id === 'washroomChecklistModal') {
+                    closeWashroomChecklistModal();
                     return;
                 }
                 this.classList.remove('active');

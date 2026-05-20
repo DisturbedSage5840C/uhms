@@ -75,7 +75,9 @@ function buildFacilityRows() {
                 building: BUILDING_NAME,
                 floor,
                 facility_type: type,
-                facility_number: index + 1,
+                facility_number: type === 'Room'
+                    ? `${floor}${String(index + 1).padStart(2, '0')}`
+                    : index + 1,
             }))
         )
     );

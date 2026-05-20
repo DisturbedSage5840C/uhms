@@ -89,12 +89,12 @@ exports.seed = async function (knex) {
             { building: 'H1', floor: 2, direction: 'East', label: 'H1 Floor 2 East', soap_level: 90, tissue_level: 85, sanitizer_level: 95, freshener_level: 80, status: 'clean', last_restocked: new Date(now - 3600000 * 2), assigned_staff_id: staff2Id },
             { building: 'H1', floor: 3, direction: 'East', label: 'H1 Floor 3 East', soap_level: 60, tissue_level: 50, sanitizer_level: 40, freshener_level: 55, status: 'clean', last_restocked: new Date(now - 3600000 * 12), assigned_staff_id: staff2Id },
             // H2 - North/South Wings
-            { building: 'H2', floor: 0, direction: 'North Wing', label: 'H2 Ground Floor North Wing', soap_level: 70, tissue_level: 65, sanitizer_level: 75, freshener_level: 60, status: 'clean', last_restocked: new Date(now - 3600000 * 8), assigned_staff_id: staff3Id },
-            { building: 'H2', floor: 0, direction: 'South Wing', label: 'H2 Ground Floor South Wing', soap_level: 20, tissue_level: 15, sanitizer_level: 10, freshener_level: 30, status: 'needs-cleaning', last_restocked: new Date(now - 3600000 * 30), assigned_staff_id: staff3Id },
-            { building: 'H2', floor: 1, direction: 'North Wing', label: 'H2 Floor 1 North Wing', soap_level: 85, tissue_level: 80, sanitizer_level: 90, freshener_level: 85, status: 'clean', last_restocked: new Date(now - 3600000 * 4), assigned_staff_id: staff3Id },
-            { building: 'H2', floor: 1, direction: 'South Wing', label: 'H2 Floor 1 South Wing', soap_level: 55, tissue_level: 40, sanitizer_level: 50, freshener_level: 45, status: 'in-progress', last_restocked: new Date(now - 3600000 * 14), assigned_staff_id: staff4Id },
-            { building: 'H2', floor: 2, direction: 'North Wing', label: 'H2 Floor 2 North Wing', soap_level: 35, tissue_level: 25, sanitizer_level: 30, freshener_level: 20, status: 'needs-cleaning', last_restocked: new Date(now - 3600000 * 24), assigned_staff_id: staff4Id },
-            { building: 'H2', floor: 2, direction: 'South Wing', label: 'H2 Floor 2 South Wing', soap_level: 95, tissue_level: 90, sanitizer_level: 88, freshener_level: 92, status: 'clean', last_restocked: new Date(now - 3600000 * 1), assigned_staff_id: staff4Id },
+            { building: 'H2', floor: 0, direction: 'Near Mess', label: 'H2 Ground Floor Near Mess', soap_level: 70, tissue_level: 65, sanitizer_level: 75, freshener_level: 60, status: 'clean', last_restocked: new Date(now - 3600000 * 8), assigned_staff_id: staff3Id },
+            { building: 'H2', floor: 0, direction: 'Near Parking Lot', label: 'H2 Ground Floor Near Parking Lot', soap_level: 20, tissue_level: 15, sanitizer_level: 10, freshener_level: 30, status: 'needs-cleaning', last_restocked: new Date(now - 3600000 * 30), assigned_staff_id: staff3Id },
+            { building: 'H2', floor: 1, direction: 'Left', label: 'H2 Floor 1 Left', soap_level: 85, tissue_level: 80, sanitizer_level: 90, freshener_level: 85, status: 'clean', last_restocked: new Date(now - 3600000 * 4), assigned_staff_id: staff3Id },
+            { building: 'H2', floor: 1, direction: 'Right', label: 'H2 Floor 1 Right', soap_level: 55, tissue_level: 40, sanitizer_level: 50, freshener_level: 45, status: 'in-progress', last_restocked: new Date(now - 3600000 * 14), assigned_staff_id: staff4Id },
+            { building: 'H2', floor: 2, direction: 'Left', label: 'H2 Floor 2 Left', soap_level: 35, tissue_level: 25, sanitizer_level: 30, freshener_level: 20, status: 'needs-cleaning', last_restocked: new Date(now - 3600000 * 24), assigned_staff_id: staff4Id },
+            { building: 'H2', floor: 2, direction: 'Right', label: 'H2 Floor 2 Right', soap_level: 95, tissue_level: 90, sanitizer_level: 88, freshener_level: 92, status: 'clean', last_restocked: new Date(now - 3600000 * 1), assigned_staff_id: staff4Id },
             // H3
             { building: 'H3', floor: 0, direction: null, label: 'H3 Ground Floor', soap_level: 75, tissue_level: 70, sanitizer_level: 80, freshener_level: 65, status: 'clean', last_restocked: new Date(now - 3600000 * 7), assigned_staff_id: staff1Id },
             { building: 'H3', floor: 1, direction: null, label: 'H3 Floor 1', soap_level: 50, tissue_level: 45, sanitizer_level: 55, freshener_level: 50, status: 'in-progress', last_restocked: new Date(now - 3600000 * 16), assigned_staff_id: staff2Id },
@@ -159,7 +159,7 @@ exports.seed = async function (knex) {
             status: 'pending', priority: 'high', resident_id: resident1Id,
         },
         {
-            category: 'cleaning', room_number: 'H2 - Ground Floor South Wing', building: 'H2',
+            category: 'cleaning', room_number: 'H2 - Ground Floor Near Parking Lot', building: 'H2',
             description: 'Washroom not cleaned for 2 days. Floor is dirty and smells bad.',
             status: 'in-progress', priority: 'high', resident_id: resident2Id, assigned_staff_id: staff3Id,
         },
@@ -170,7 +170,7 @@ exports.seed = async function (knex) {
             resolved_at: new Date(now2 - 86400000),
         },
         {
-            category: 'false_reporting', room_number: 'H2 - Floor 2 North Wing', building: 'H2',
+            category: 'false_reporting', room_number: 'H2 - Floor 2 Left', building: 'H2',
             description: 'Staff uploaded old photo as proof of restocking but washroom still has no tissues. Photo metadata shows it was taken 3 days ago.',
             status: 'pending', priority: 'urgent', resident_id: resident1Id,
         },

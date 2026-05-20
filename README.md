@@ -1,32 +1,35 @@
 # University Housekeeping Management System
 
-AI-powered campus housekeeping and hygiene compliance platform with role-aware workflows, complaint intelligence, and mobile access.
+Campus housekeeping and hygiene compliance platform with role-aware workflows, complaint intelligence, and building-wide facility tracking.
 
 ## Why This Project Stands Out
 
-University Housekeeping Management System turns hygiene operations into a measurable, auditable system:
+UHMS turns hygiene operations into a measurable, auditable system:
 
 - Multi-role operations across Admin, Supervisor, Cleaning Staff, and Student/Faculty
 - Building-floor-direction washroom tracking with supply visibility
-- AI-assisted complaint analysis with category, priority, sentiment, and urgency signals
-- Supervisor operations with complaints overview, full staff tools access, and supply stats updates
-- Web platform plus Android app shell for on-the-go access
+- Rule-based complaint categorisation and priority analysis (12 categories, urgency detection, sentiment)
+- Supervisor washroom checklists with per-item completion and camera proof
+- H2 Hostel facility tracker with per-item cleaning photo log and admin checklist view
+- Supervisor reminders and staff coordination
+- Web platform with Python HTTP server for local serving
 
 ## Product Snapshot
 
 ### Core Modules
 
 - Authentication and role-based dashboards
-- Complaints lifecycle with AI metadata and media evidence
-- Washroom status and consumables monitoring (soap, tissue, sanitizer)
+- Complaints lifecycle with AI-assisted metadata and media evidence
+- Washroom status and consumables monitoring (soap, tissue, sanitizer levels)
 - Supervisor washroom checklists with per-item completion and photo proof
+- H2 Hostel facility update log (rooms, washrooms, appliances) with admin view
 - Supervisor reminders and staff coordination
 - Reporting-ready documentation (HTML + PDF)
 
 ### Role Experience
 
-- Admin: governance, building-to-supervisor mapping, washroom/inventory/staff oversight, and live work monitoring
-- Supervisor: complaints in assigned buildings, supply stats updates, checklist submissions, and full staff-tools mode (tasks/issues/upload)
+- Admin: governance, building-to-supervisor mapping, washroom/inventory/staff oversight, live work monitoring, and H2 facility checklist log
+- Supervisor: complaints in assigned buildings, supply stats updates, per-washroom checklist submissions, and full staff-tools mode (tasks/issues/upload)
 - Cleaning Staff: assigned task execution and updates
 - Student/Faculty: complaint submission and tracking
 
@@ -44,22 +47,15 @@ University Housekeeping Management System turns hygiene operations into a measur
 - Database access in [backend/database](backend/database)
 - Middleware stack in [backend/middleware](backend/middleware)
 
-### AI Service
-
-- Python microservice in [ai-service/main.py](ai-service/main.py)
-- ML and NLP logic in [ai-service/services](ai-service/services)
-
 ### Mobile
 
-- React Native app shell in [HostelCareApp/App.js](HostelCareApp/App.js)
-- Alternate mobile workspace in [mobile-src/App.js](mobile-src/App.js)
-- Android artifacts for manual install under [apk-download](apk-download)
+- React Native WebView app in [mobile-src/App.js](mobile-src/App.js)
 
 ## Tech Stack
 
-- Frontend: HTML, CSS, JavaScript
+- Frontend: HTML, CSS, JavaScript (single-file SPA)
 - Backend: Node.js, Express
-- AI: Python, NLP/ML services
+- AI: Rule-based analysis (keyword categorisation + urgency detection + sentiment)
 - Data: PostgreSQL + Redis
 - Mobile: React Native + WebView
 - DevOps: Docker Compose, Nginx
@@ -76,26 +72,18 @@ npm run init-db
 npm run dev
 ```
 
-### 2) Run AI Service
+### 2) Serve Web App
 
 ```bash
-cd ai-service
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python main.py
+# From project root
+python3 -m http.server 8000
+# Then open http://localhost:8000
 ```
 
-### 3) Open Web App
+### 3) Run Mobile (Android)
 
 ```bash
-open index.html
-```
-
-### 4) Run Mobile (Android)
-
-```bash
-cd HostelCareApp
+cd mobile-src
 npm install
 npx react-native run-android
 ```
@@ -117,6 +105,7 @@ Representative endpoint groups:
 - /api/staff
 - /api/rooms
 - /api/washrooms
+- /api/facilities
 - /api/work-submissions
 - /api/reminders
 - /api/ai

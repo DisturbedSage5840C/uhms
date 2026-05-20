@@ -112,6 +112,9 @@ function startWorker() {
     app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
         maxAge: '7d',
         etag: true,
+        setHeaders: (res) => {
+            res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+        },
     }));
 
     // Serve frontend in production (serves from project root where index.html lives)
