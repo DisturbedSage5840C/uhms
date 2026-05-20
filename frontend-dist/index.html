@@ -2215,8 +2215,9 @@
             <div class="facility-selector-bar">
                 <div class="form-group">
                     <label for="adminFacilityBuilding">Building</label>
-                    <select id="adminFacilityBuilding" disabled>
+                    <select id="adminFacilityBuilding" onchange="onAdminBuildingChange()">
                         <option value="H2 Hostel">H2 Hostel</option>
+                        <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2371,8 +2372,9 @@
             <div class="facility-selector-bar">
                 <div class="form-group">
                     <label for="supervisorFacilityBuilding">Building</label>
-                    <select id="supervisorFacilityBuilding" disabled>
+                    <select id="supervisorFacilityBuilding" onchange="onSupervisorBuildingChange()">
                         <option value="H2 Hostel">H2 Hostel</option>
+                        <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2782,6 +2784,7 @@
         let ignoreLanguageMutationsUntil = 0;
         let currentLanguage = localStorage.getItem('appLanguage') || 'en';
         let facilityFallbackState = {};
+        let activeFacilityBuilding = 'H2 Hostel';
         let supervisorFacilityRows = [];
         let adminFacilityLogRows = [];
         let pendingFacilityCameraUpdate = null;
@@ -3358,6 +3361,60 @@
 
         const H2_PANTRY_TYPES = new Set(['Refrigerator', 'Sink', 'Induction', 'Microwave', 'Water Cooler']);
 
+        // —— A1-Bharti Academic Building ——
+        const A1_BUILDING_NAME = 'A1-Bharti Academic Building';
+        const A1_FLOORS = ['G', '1', '2', '3', '4'];
+        const A1_GROUND_ROOM_LABELS = ['A1001A', 'A1001B', 'A1002', 'A1003', 'A1004', 'A1005'];
+
+        const A1_FACILITY_CONFIG = {
+            'G': [
+                { type: 'Reception', count: 1 },
+                { type: 'Corridor', count: 1 },
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Room', count: 6 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+            '1': [
+                { type: 'Corridor', count: 1 },
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Room', count: 10 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+            '2': [
+                { type: 'Corridor', count: 1 },
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Room', count: 10 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+            '3': [
+                { type: 'Corridor', count: 1 },
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Room', count: 10 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+            '4': [
+                { type: 'Corridor', count: 1 },
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Room', count: 10 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+        };
+
+        function getBuildingFacilityConfig(building) {
+            if (building === A1_BUILDING_NAME) return A1_FACILITY_CONFIG;
+            return H2_FACILITY_CONFIG;
+        }
+
         const washroomData = [
             // H1 — Hostel 1
             { id: 'H1-G-M', building: 'H1', floor: 'Ground', direction: '', label: 'Ground Floor WR (Male)', supplies: { tissues: 80, soap: 90, sanitizer: 70 }, lastRestocked: new Date(Date.now() - 3600000) },
@@ -3719,14 +3776,25 @@
         }
 
         function generateFacilityFallbackRows(floor) {
-            const config = H2_FACILITY_CONFIG[floor] || [];
+            const building = activeFacilityBuilding;
+            const config = getBuildingFacilityConfig(building)[floor] || [];
+            let groundRoomIndex = 0;
             return config.flatMap(({ type, count }) => Array.from({ length: count }, (_, index) => {
-                const facilityNumber = type === 'Room'
-                    ? `${floor}${String(index + 1).padStart(2, '0')}`
-                    : index + 1;
+                let facilityNumber;
+                if (type === 'Room') {
+                    if (building === A1_BUILDING_NAME && floor === 'G') {
+                        facilityNumber = A1_GROUND_ROOM_LABELS[groundRoomIndex++];
+                    } else if (building === A1_BUILDING_NAME) {
+                        facilityNumber = index + 1;
+                    } else {
+                        facilityNumber = `${floor}${String(index + 1).padStart(2, '0')}`;
+                    }
+                } else {
+                    facilityNumber = index + 1;
+                }
                 return {
                     id: `local-${floor}-${facilitySlug(type)}-${index + 1}`,
-                    building: H2_BUILDING_NAME,
+                    building,
                     floor,
                     facility_type: type,
                     facility_number: facilityNumber,
@@ -3759,7 +3827,7 @@
         }
 
         function getFacilityTypesForFloor(floor) {
-            return (H2_FACILITY_CONFIG[floor] || []).map((entry) => entry.type);
+            return (getBuildingFacilityConfig(activeFacilityBuilding)[floor] || []).map((entry) => entry.type);
         }
 
         function groupFacilityRows(rows, floor) {
@@ -3788,6 +3856,16 @@
         const WASHROOM_FACILITY_TYPES = new Set(['Washroom', 'Washroom (Male)', 'Washroom (Female)', 'Washroom (Inclusive)']);
 
         function formatFacilityNumber(row) {
+            if (row.building === A1_BUILDING_NAME) {
+                if (row.floor === 'G' && row.facility_type === 'Room') {
+                    return String(row.facility_number); // e.g. A1001A
+                }
+                if (row.facility_type === 'Room') {
+                    const num = Number(row.facility_number);
+                    return `A1-${row.floor}-${String(num).padStart(2, '0')}`;
+                }
+                return row.facility_number;
+            }
             if (
                 (row.building === H2_BUILDING_NAME || row.building === 'H2 Hostel') &&
                 row.facility_type === 'Room'
@@ -3900,9 +3978,40 @@
         async function renderSupervisorFacilityDashboard() {
             const buildingSelect = document.getElementById('supervisorFacilityBuilding');
             const floorSelect = document.getElementById('supervisorFacilityFloor');
-            if (buildingSelect) buildingSelect.value = H2_BUILDING_NAME;
+            if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
             if (floorSelect && !floorSelect.value) floorSelect.value = 'G';
             await loadSupervisorFacilityFloor();
+        }
+
+        function onSupervisorBuildingChange() {
+            const buildingSelect = document.getElementById('supervisorFacilityBuilding');
+            const floorSelect = document.getElementById('supervisorFacilityFloor');
+            if (!buildingSelect || !floorSelect) return;
+
+            activeFacilityBuilding = buildingSelect.value;
+            facilityFallbackState = {};
+
+            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS : H2_FLOORS;
+            floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
+            floorSelect.value = floors[0];
+
+            loadSupervisorFacilityFloor();
+        }
+
+        function onAdminBuildingChange() {
+            const buildingSelect = document.getElementById('adminFacilityBuilding');
+            const floorSelect = document.getElementById('adminFacilityFloor');
+            if (!buildingSelect || !floorSelect) return;
+
+            activeFacilityBuilding = buildingSelect.value;
+            facilityFallbackState = {};
+
+            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS : H2_FLOORS;
+            floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
+            floorSelect.value = floors[0];
+
+            populateAdminFacilityDropdown();
+            loadAdminFacilityLog();
         }
 
         async function loadSupervisorFacilityFloor() {
@@ -3910,8 +4019,8 @@
             const container = document.getElementById('supervisorFacilityContainer');
             if (!container) return;
 
-            container.innerHTML = '<div class="facility-loading"><span class="spinner"></span> Loading H2 facility tracker...</div>';
-            const query = facilityQuery({ building: H2_BUILDING_NAME, floor });
+            container.innerHTML = '<div class="facility-loading"><span class="spinner"></span> Loading facility tracker...</div>';
+            const query = facilityQuery({ building: activeFacilityBuilding, floor });
             const result = await api.get(`/facilities?${query}`);
 
             supervisorFacilityRows = Array.isArray(result) ? result : getFacilityFallbackRows(floor);
@@ -4389,7 +4498,7 @@
         async function renderAdminFacilityDashboard() {
             const buildingSelect = document.getElementById('adminFacilityBuilding');
             const floorSelect = document.getElementById('adminFacilityFloor');
-            if (buildingSelect) buildingSelect.value = H2_BUILDING_NAME;
+            if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
             if (floorSelect && !floorSelect.value) floorSelect.value = 'G';
             populateAdminFacilityDropdown();
             await loadAdminFacilityLog();
@@ -4416,7 +4525,7 @@
             }
 
             container.innerHTML = '<div class="facility-loading"><span class="spinner"></span> Loading facility update log...</div>';
-            const query = facilityQuery({ building: H2_BUILDING_NAME, floor, facility_type: facilityType });
+            const query = facilityQuery({ building: activeFacilityBuilding, floor, facility_type: facilityType });
             const result = await api.get(`/facilities/log?${query}`);
 
             adminFacilityLogRows = Array.isArray(result)
@@ -4521,7 +4630,7 @@
                 // washrooms.floor is integer; convert 'G'→0, '1'→1, etc.
                 const rawFloor = (document.getElementById('adminWrFloor') || {}).value || '';
                 const date = (document.getElementById('adminWrDate') || {}).value || '';
-                const params = new URLSearchParams({ building: 'H2 Hostel' });
+                const params = new URLSearchParams({ building: activeFacilityBuilding });
                 if (rawFloor !== '') {
                     const floorNum = rawFloor === 'G' ? '0' : rawFloor;
                     params.set('floor', floorNum);

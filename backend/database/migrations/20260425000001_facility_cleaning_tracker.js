@@ -68,19 +68,92 @@ const FACILITY_CONFIG = {
     9: STANDARD_FLOOR_FACILITIES,
 };
 
+const A1_BUILDING_NAME = 'A1-Bharti Academic Building';
+const A1_GROUND_ROOM_LABELS = ['A1001A', 'A1001B', 'A1002', 'A1003', 'A1004', 'A1005'];
+
+const A1_FACILITY_CONFIG = {
+    G: [
+        { type: 'Reception', count: 1 },
+        { type: 'Corridor', count: 1 },
+        { type: 'Lift Lobby', count: 1 },
+        { type: 'Room', count: 6 },
+        { type: 'Washroom (Male)', count: 1 },
+        { type: 'Washroom (Female)', count: 1 },
+        { type: 'Washroom (Inclusive)', count: 1 },
+    ],
+    1: [
+        { type: 'Corridor', count: 1 },
+        { type: 'Lift Lobby', count: 1 },
+        { type: 'Room', count: 10 },
+        { type: 'Washroom (Male)', count: 1 },
+        { type: 'Washroom (Female)', count: 1 },
+        { type: 'Washroom (Inclusive)', count: 1 },
+    ],
+    2: [
+        { type: 'Corridor', count: 1 },
+        { type: 'Lift Lobby', count: 1 },
+        { type: 'Room', count: 10 },
+        { type: 'Washroom (Male)', count: 1 },
+        { type: 'Washroom (Female)', count: 1 },
+        { type: 'Washroom (Inclusive)', count: 1 },
+    ],
+    3: [
+        { type: 'Corridor', count: 1 },
+        { type: 'Lift Lobby', count: 1 },
+        { type: 'Room', count: 10 },
+        { type: 'Washroom (Male)', count: 1 },
+        { type: 'Washroom (Female)', count: 1 },
+        { type: 'Washroom (Inclusive)', count: 1 },
+    ],
+    4: [
+        { type: 'Corridor', count: 1 },
+        { type: 'Lift Lobby', count: 1 },
+        { type: 'Room', count: 10 },
+        { type: 'Washroom (Male)', count: 1 },
+        { type: 'Washroom (Female)', count: 1 },
+        { type: 'Washroom (Inclusive)', count: 1 },
+    ],
+};
+
 function buildFacilityRows() {
     return Object.entries(FACILITY_CONFIG).flatMap(([floor, facilities]) =>
         facilities.flatMap(({ type, count }) =>
             Array.from({ length: count }, (_, index) => ({
                 building: BUILDING_NAME,
-                floor,
+                floor: String(floor),
                 facility_type: type,
                 facility_number: type === 'Room'
                     ? `${floor}${String(index + 1).padStart(2, '0')}`
-                    : index + 1,
+                    : String(index + 1),
             }))
         )
     );
+}
+
+function buildA1FacilityRows() {
+    return Object.entries(A1_FACILITY_CONFIG).flatMap(([floor, facilities]) => {
+        let roomIndexForGround = 0;
+        return facilities.flatMap(({ type, count }) =>
+            Array.from({ length: count }, (_, index) => {
+                let facilityNumber;
+                if (type === 'Room') {
+                    if (String(floor) === 'G') {
+                        facilityNumber = A1_GROUND_ROOM_LABELS[roomIndexForGround++];
+                    } else {
+                        facilityNumber = String(index + 1);
+                    }
+                } else {
+                    facilityNumber = String(index + 1);
+                }
+                return {
+                    building: A1_BUILDING_NAME,
+                    floor: String(floor),
+                    facility_type: type,
+                    facility_number: facilityNumber,
+                };
+            })
+        );
+    });
 }
 
 exports.up = async function up(knex) {
@@ -89,7 +162,7 @@ exports.up = async function up(knex) {
         table.string('building', 100).notNullable();
         table.string('floor', 10).notNullable();
         table.string('facility_type', 100).notNullable();
-        table.integer('facility_number').notNullable();
+        table.string('facility_number', 50).notNullable();
         table.string('cleaned', 5);
         table.string('photo_url', 500);
         table.timestamp('last_updated');
@@ -104,6 +177,7 @@ exports.up = async function up(knex) {
     });
 
     await knex('facility_updates').insert(buildFacilityRows());
+    await knex('facility_updates').insert(buildA1FacilityRows());
 };
 
 exports.down = function down(knex) {
