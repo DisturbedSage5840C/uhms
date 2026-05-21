@@ -136,6 +136,12 @@ function startWorker() {
         maxAge: '30d',
         etag: true,
         index: 'index.html',
+        setHeaders: (res, filePath) => {
+            // Never cache HTML — ensures browser always gets fresh CSP headers
+            if (filePath.endsWith('.html')) {
+                res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+            }
+        },
     }));
 
     // Health check
