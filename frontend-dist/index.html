@@ -4567,7 +4567,14 @@
             const buildingSelect = document.getElementById('supervisorFacilityBuilding');
             const floorSelect = document.getElementById('supervisorFacilityFloor');
             if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
-            if (floorSelect && !floorSelect.value) floorSelect.value = 'G';
+            if (floorSelect) {
+                const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                             : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
+                             : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
+                             : H2_FLOORS;
+                floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
+                if (!floorSelect.value) floorSelect.value = floors[0];
+            }
             await loadSupervisorFacilityFloor();
         }
 
@@ -5102,7 +5109,14 @@
             const buildingSelect = document.getElementById('adminFacilityBuilding');
             const floorSelect = document.getElementById('adminFacilityFloor');
             if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
-            if (floorSelect && !floorSelect.value) floorSelect.value = 'G';
+            if (floorSelect) {
+                const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                             : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
+                             : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
+                             : H2_FLOORS;
+                floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
+                if (!floorSelect.value) floorSelect.value = floors[0];
+            }
             populateAdminFacilityDropdown();
             await loadAdminFacilityLog();
         }
