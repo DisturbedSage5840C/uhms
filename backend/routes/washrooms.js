@@ -122,8 +122,18 @@ router.get('/checklists', requireRole('admin', 'supervisor'), async (req, res, n
             .leftJoin('users as u', 'wc.supervisor_id', 'u.id')
             .leftJoin('washrooms as w', 'wc.washroom_id', 'w.id')
             .orderBy('wc.submitted_at', 'desc');
-        if (building) query = query.where('w.building', building);
-        if (floor !== undefined && floor !== '') query = query.where('w.floor', parseInt(floor, 10));
+        // Normalize 'H2 Hostel' → 'H2', 'H1 Hostel' → 'H1', etc.
+        if (building) {
+            const shortName = building.replace(/ Hostel$/i, '').split('-')[0].trim();
+            query = query.where(function () {
+                this.where('w.building', building).orWhere('w.building', shortName);
+            });
+        }
+        // Normalize floor: 'G' → 0, otherwise parseInt
+        if (floor !== undefined && floor !== '') {
+            const floorNum = (floor === 'G' || floor === 'g') ? 0 : parseInt(floor, 10);
+            query = query.where('w.floor', floorNum);
+        }
         if (date) query = query.whereRaw('DATE(wc.submitted_at) = ?', [date]);
         const rows = await query.limit(100);
         const normalized = rows.map(r => ({
