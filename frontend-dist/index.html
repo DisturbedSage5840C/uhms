@@ -2762,10 +2762,11 @@
         const API_BASE = `${window.location.origin}/api`;
         let authToken = localStorage.getItem('authToken');
 
-        // Warn if accessed from wrong port (backend only runs on 3001)
+        // Warn if accessed from a port that has no backend (e.g. VS Code Live Server on 5500 or 8000)
         (function checkCorrectPort() {
             const port = window.location.port;
-            if (port && port !== '3001') {
+            const knownBackendPorts = new Set(['3001', '5000', '10000', '443', '80', '']);
+            if (port && !knownBackendPorts.has(port)) {
                 setTimeout(() => showToast(`Wrong URL — please open http://${window.location.hostname}:3001`), 800);
             }
         })();

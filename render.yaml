@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: uhms
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install --production
+    startCommand: cd backend && node scripts/start.js && node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: APP_PORT
+        value: 10000
+      # Set these in the Render dashboard:
+      # DATABASE_URL  ← paste from Neon
+      # JWT_SECRET    ← any long random string
