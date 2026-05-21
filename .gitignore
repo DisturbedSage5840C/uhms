@@ -30,6 +30,10 @@ Thumbs.db
 backend/uploads/
 ai-service/models/
 
+# APK build outputs
+*.apk
+*.aab
+
 # Mobile build artifacts
 HostelCareApp/android/.gradle/
 HostelCareApp/android/app/build/
