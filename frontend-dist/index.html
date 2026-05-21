@@ -5252,15 +5252,10 @@
                 const wrBuildingEl = document.getElementById('adminWrBuilding');
                 const wrBuilding = (wrBuildingEl && wrBuildingEl.value) ? wrBuildingEl.value : activeFacilityBuilding;
                 const params = new URLSearchParams({ building: wrBuilding });
-                if (rawFloor !== '') {
-                    const floorNum = rawFloor === 'G' ? '0' : rawFloor;
-                    params.set('floor', floorNum);
-                }
+                if (rawFloor !== '') params.set('floor', rawFloor);
                 if (date) params.set('date', date);
-                const isH2 = wrBuilding === 'H2 Hostel';
-                const endpoint = isH2
-                    ? `/washrooms/checklists?${params.toString()}`
-                    : `/facilities/washroom-updates?${params.toString()}`;
+                // Always use facility_updates — it contains real supervisor submissions for all buildings
+                const endpoint = `/facilities/washroom-updates?${params.toString()}`;
                 const rows = await api.get(endpoint);
                 renderAdminWashroomChecklists(rows);
             } catch (e) {
