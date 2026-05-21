@@ -205,8 +205,6 @@ Pantry facilities on non-ground floors are grouped under a collapsible "Pantry" 
 |---|---|---|
 | `admin` | Admin Manager | Full access: all buildings, all staff, all complaints, facility tracking, washroom checklists across all buildings |
 | `supervisor` | Shift Supervisor | Facility cleaning updates (photo proof), washroom checklists, complaint assignment, work submission approvals, reminders |
-| `staff` | Cleaning Staff | Update room/supply status, submit work records, view assigned tasks |
-| `resident` | Hostel Resident | Raise maintenance complaints, view own complaint status |
 
 Role assignment is fixed at registration and enforced server-side via JWT claims on every API call.
 
@@ -226,9 +224,8 @@ Admins can view submitted washroom cleaning records across all buildings. Filter
 
 ### Complaint Management
 
-- Residents submit complaints with category, description, and optional photo.
-- AI service (if configured) auto-suggests priority (low/medium/high) and category.
-- Supervisors and admins assign complaints to staff; staff resolve and log notes.
+- Users submit complaints with category, description, and optional photo.
+- Supervisors and admins assign and resolve complaints with notes.
 - Full history log per complaint.
 
 ### Supply Inventory
@@ -242,10 +239,6 @@ Staff submit work completion records (with optional photo evidence) for supervis
 ### Reminders
 
 Supervisors create one-off or recurring reminders for tasks. The reminder scheduler checks every minute and sends in-app notifications when reminders fall due.
-
-### AI Integration (Optional)
-
-The `/api/ai` routes proxy to a separate Python AI microservice (`AI_SERVICE_URL`). If the microservice is not running, AI endpoints return fallback responses — the core app continues to work normally.
 
 ### Home Stats (Public)
 
@@ -269,7 +262,6 @@ All tables created and managed via Knex migrations, run automatically on every s
 | `complaints` | Maintenance requests (status: pending/in_progress/resolved) |
 | `cleaning_logs` | Audit log of cleaning activities |
 | `notifications` | In-app notification queue per user |
-| `ai_insights` | Cached AI analysis results |
 | `audit_logs` | General system audit trail |
 
 ### Facility Tracking Tables
@@ -413,19 +405,6 @@ All `/api/*` routes (except login, register, home-stats) require `Authorization:
 | PUT | `/:id` | Supervisor, Admin | Update reminder |
 | DELETE | `/:id` | Supervisor, Admin | Delete reminder |
 | GET | `/due/now` | Supervisor, Admin | Reminders due right now |
-
-### AI — `/api/ai`
-
-| Method | Path | Role | Description |
-|---|---|---|---|
-| GET | `/status` | All | AI service health check |
-| POST | `/analyze-complaint` | All | Get priority + category suggestion |
-| POST | `/categorize` | All | Categorize complaint text |
-| GET | `/optimize-tasks` | All | Task scheduling suggestions |
-| GET | `/predictions` | Admin | Predictive maintenance insights |
-| GET | `/responses/:complaintId` | Admin, Supervisor, Staff | Suggested resolution responses |
-| GET | `/insights` | Admin | System-wide AI insights |
-| POST | `/batch-analyze` | Admin | Bulk complaint analysis |
 
 ### Public
 
@@ -667,13 +646,4 @@ All demo accounts use password: **`password123`**
 | Email | Name | Role |
 |---|---|---|
 | admin@hostel.com | Admin Manager | Admin |
-| meera@hostel.com | Meera Desai | Supervisor (Morning shift) |
-| suresh@hostel.com | Suresh Nair | Supervisor (Evening shift) |
-| rajesh@hostel.com | Rajesh Kumar | Staff (Morning) |
-| priya@hostel.com | Priya Sharma | Staff (Evening) |
-| amit@hostel.com | Amit Patel | Staff (Morning) |
-| sunita@hostel.com | Sunita Verma | Staff (Evening) |
-| student1@hostel.com | Arjun Singh | Resident (H1-101) |
-| student2@hostel.com | Neha Gupta | Resident (H2-205) |
-| student3@hostel.com | Vikram Reddy | Resident (H3-302) |
-| faculty1@hostel.com | Dr. Sneha Iyer | Resident (Academic Block) |
+| meera@hostel.com | Meera Desai | Supervisor |
