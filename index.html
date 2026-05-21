@@ -2260,6 +2260,8 @@
                             <select id="adminWrBuilding" onchange="loadAdminWashroomChecklists()">
                                 <option value="H2 Hostel">H2 Hostel</option>
                                 <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
+                                <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
+                                <option value="A2-Havells Building">A2-Havells Building</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -5239,6 +5241,7 @@
             const open = body.style.display !== 'none';
             body.style.display = open ? 'none' : 'block';
             if (chevron) chevron.textContent = open ? '▼' : '▲';
+            if (!open) loadAdminWashroomChecklists();
         }
 
         async function loadAdminWashroomChecklists() {
