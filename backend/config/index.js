@@ -108,7 +108,8 @@ const config = {
 
 // Validate critical config in production
 if (config.app.env === 'production') {
-    const required = ['JWT_SECRET', 'DB_PASSWORD'];
+    const required = ['JWT_SECRET'];
+    if (!process.env.DATABASE_URL) required.push('DB_PASSWORD');
     const missing = required.filter(key => !process.env[key]);
     if (missing.length > 0) {
         throw new Error(`Missing required env vars for production: ${missing.join(', ')}`);
