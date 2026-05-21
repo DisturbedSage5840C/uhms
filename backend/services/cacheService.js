@@ -45,6 +45,10 @@ function getClient() {
 }
 
 async function connect() {
+    if (!process.env.REDIS_URL && config.app.env === 'production') {
+        logger.info('Redis not configured — caching disabled');
+        return false;
+    }
     try {
         const redis = getClient();
         await redis.connect();
