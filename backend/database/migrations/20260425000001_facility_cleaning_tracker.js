@@ -290,6 +290,77 @@ exports.up = async function up(knex) {
         )
     );
     await knex('facility_updates').insert(a2Rows);
+
+    // H1 Hostel — fresh install seed
+    const h1Name = 'H1 Hostel';
+    const h1MrLabels = ['MR1', 'MR2', 'MR3', 'MR4'];
+    const h1Config = {
+        G: [
+            {type:'Lobby',count:1},{type:'Warden Room',count:2},{type:'Lift Lobby',count:1},
+        ],
+        1: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},{type:'Washing Machine',count:2},
+        ],
+        2: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},
+        ],
+        3: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},{type:'Washing Machine',count:2},
+        ],
+        4: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},
+        ],
+        5: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},{type:'Washing Machine',count:2},
+        ],
+        6: [
+            {type:'Meeting Room',count:4},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Water Cooler',count:2},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},{type:'Sink',count:1},
+        ],
+        7: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},{type:'Washing Machine',count:2},
+        ],
+        8: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},
+        ],
+        9: [
+            {type:'Room',count:25},{type:'Washroom (Male)',count:1},{type:'Washroom (Female)',count:1},{type:'Washroom (Inclusive)',count:1},
+            {type:'Corridor',count:1},{type:'Microwave',count:1},{type:'Induction',count:1},{type:'Refrigerator',count:1},
+            {type:'Sink',count:1},{type:'Water Cooler',count:2},{type:'Balcony',count:1},{type:'Washing Machine',count:2},
+        ],
+    };
+    const h1Rows = Object.entries(h1Config).flatMap(([floor, facilities]) => {
+        let mrIdx = 0;
+        return facilities.flatMap(({type, count}) =>
+            Array.from({length: count}, (_, idx) => {
+                const f = String(floor);
+                let fn;
+                if (f === '6' && type === 'Meeting Room') {
+                    fn = h1MrLabels[mrIdx++];
+                } else if (type === 'Room') {
+                    fn = `${f}${String(idx + 1).padStart(2, '0')}`;
+                } else {
+                    fn = String(idx + 1);
+                }
+                return {building: h1Name, floor: f, facility_type: type, facility_number: fn};
+            })
+        );
+    });
+    await knex('facility_updates').insert(h1Rows);
 };
 
 exports.down = function down(knex) {

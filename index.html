@@ -2216,6 +2216,7 @@
                 <div class="form-group">
                     <label for="adminFacilityBuilding">Building</label>
                     <select id="adminFacilityBuilding" onchange="onAdminBuildingChange()">
+                        <option value="H1 Hostel">H1 Hostel</option>
                         <option value="H2 Hostel">H2 Hostel</option>
                         <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                         <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
@@ -2258,6 +2259,7 @@
                         <div class="form-group">
                             <label for="adminWrBuilding">Building</label>
                             <select id="adminWrBuilding" onchange="loadAdminWashroomChecklists()">
+                                <option value="H1 Hostel">H1 Hostel</option>
                                 <option value="H2 Hostel">H2 Hostel</option>
                                 <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                                 <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
@@ -2378,6 +2380,7 @@
                 <div class="form-group">
                     <label for="supervisorFacilityBuilding">Building</label>
                     <select id="supervisorFacilityBuilding" onchange="onSupervisorBuildingChange()">
+                        <option value="H1 Hostel">H1 Hostel</option>
                         <option value="H2 Hostel">H2 Hostel</option>
                         <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
                         <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
@@ -3699,6 +3702,140 @@
             { id: 'H2', name: 'H2 Hostel', type: 'hostel' },
         ];
 
+        // ── H1 Hostel ──
+        const H1_BUILDING_NAME = 'H1 Hostel';
+        const H1_FLOORS = ['G', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+        const H1_SIXTH_FLOOR_MR_LABELS = ['MR1', 'MR2', 'MR3', 'MR4'];
+
+        const H1_FACILITY_CONFIG = {
+            'G': [
+                { type: 'Lobby',        count: 1 },
+                { type: 'Warden Room',  count: 2 },
+                { type: 'Lift Lobby',   count: 1 },
+            ],
+            '1': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+                { type: 'Washing Machine',     count: 2 },
+            ],
+            '2': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+            ],
+            '3': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+                { type: 'Washing Machine',     count: 2 },
+            ],
+            '4': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+            ],
+            '5': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+                { type: 'Washing Machine',     count: 2 },
+            ],
+            '6': [
+                { type: 'Meeting Room',        count: 4 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+            ],
+            '7': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+                { type: 'Washing Machine',     count: 2 },
+            ],
+            '8': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+            ],
+            '9': [
+                { type: 'Room',                count: 25 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Microwave',           count: 1 },
+                { type: 'Induction',           count: 1 },
+                { type: 'Refrigerator',        count: 1 },
+                { type: 'Sink',                count: 1 },
+                { type: 'Water Cooler',        count: 2 },
+                { type: 'Balcony',             count: 1 },
+                { type: 'Washing Machine',     count: 2 },
+            ],
+        };
+
         const H2_BUILDING_NAME = 'H2 Hostel';
         const H2_FLOORS = ['G', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         const H2_FACILITY_CONFIG = {
@@ -3960,6 +4097,7 @@
         };
 
         function getBuildingFacilityConfig(building) {
+            if (building === H1_BUILDING_NAME) return H1_FACILITY_CONFIG;
             if (building === A1_BUILDING_NAME) return A1_FACILITY_CONFIG;
             if (building === A4_BUILDING_NAME) return A4_FACILITY_CONFIG;
             if (building === A2_BUILDING_NAME) return A2_FACILITY_CONFIG;
@@ -4341,7 +4479,15 @@
             let groundRoomIndex = 0;
             return config.flatMap(({ type, count }) => Array.from({ length: count }, (_, index) => {
                 let facilityNumber;
-                if (building === A4_BUILDING_NAME) {
+                if (building === H1_BUILDING_NAME) {
+                    if (floor === '6' && type === 'Meeting Room') {
+                        facilityNumber = H1_SIXTH_FLOOR_MR_LABELS[index];
+                    } else if (type === 'Room') {
+                        facilityNumber = `${floor}${String(index + 1).padStart(2, '0')}`;
+                    } else {
+                        facilityNumber = index + 1;
+                    }
+                } else if (building === A4_BUILDING_NAME) {
                     if (type === 'Office') {
                         facilityNumber = A4_GROUND_OFFICE_LABELS[index];
                     } else if (type === 'Room') {
@@ -4438,6 +4584,17 @@
         const WASHROOM_FACILITY_TYPES = new Set(['Washroom', 'Washroom (Male)', 'Washroom (Female)', 'Washroom (Inclusive)']);
 
         function formatFacilityNumber(row) {
+            if (row.building === H1_BUILDING_NAME) {
+                if (row.floor === '6' && row.facility_type === 'Meeting Room') {
+                    return String(row.facility_number);
+                }
+                if (row.facility_type === 'Room') {
+                    const num = Number(row.facility_number);
+                    if (num >= 100) return String(num);
+                    return `${row.floor}${String(num).padStart(2, '0')}`;
+                }
+                return row.facility_number;
+            }
             if (row.building === A4_BUILDING_NAME) {
                 return String(row.facility_number);
             }
@@ -4570,7 +4727,8 @@
             const floorSelect = document.getElementById('supervisorFacilityFloor');
             if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
             if (floorSelect) {
-                const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                const floors = activeFacilityBuilding === H1_BUILDING_NAME ? H1_FLOORS
+                             : activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
                              : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
                              : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
                              : H2_FLOORS;
@@ -4588,7 +4746,8 @@
             activeFacilityBuilding = buildingSelect.value;
             facilityFallbackState = {};
 
-            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+            const floors = activeFacilityBuilding === H1_BUILDING_NAME ? H1_FLOORS
+                         : activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
                          : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
                          : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
                          : H2_FLOORS;
@@ -4606,7 +4765,8 @@
             activeFacilityBuilding = buildingSelect.value;
             facilityFallbackState = {};
 
-            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+            const floors = activeFacilityBuilding === H1_BUILDING_NAME ? H1_FLOORS
+                         : activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
                          : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
                          : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
                          : H2_FLOORS;
@@ -5112,7 +5272,8 @@
             const floorSelect = document.getElementById('adminFacilityFloor');
             if (buildingSelect) buildingSelect.value = activeFacilityBuilding;
             if (floorSelect) {
-                const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                const floors = activeFacilityBuilding === H1_BUILDING_NAME ? H1_FLOORS
+                             : activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
                              : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
                              : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
                              : H2_FLOORS;
