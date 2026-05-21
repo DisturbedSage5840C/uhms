@@ -62,7 +62,20 @@ function startWorker() {
 
     // Security middleware
     app.use(helmet({
-        contentSecurityPolicy: config.app.env === 'production' ? undefined : false,
+        contentSecurityPolicy: config.app.env === 'production' ? {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+                scriptSrcAttr: ["'unsafe-inline'"],
+                styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+                imgSrc: ["'self'", 'data:', 'blob:'],
+                connectSrc: ["'self'"],
+                fontSrc: ["'self'", 'https:', 'data:'],
+                objectSrc: ["'none'"],
+                frameAncestors: ["'self'"],
+                upgradeInsecureRequests: [],
+            },
+        } : false,
         crossOriginEmbedderPolicy: false,
     }));
     app.use(hpp()); // HTTP Parameter Pollution protection
