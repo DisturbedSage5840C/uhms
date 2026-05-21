@@ -2218,6 +2218,8 @@
                     <select id="adminFacilityBuilding" onchange="onAdminBuildingChange()">
                         <option value="H2 Hostel">H2 Hostel</option>
                         <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
+                        <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
+                        <option value="A2-Havells Building">A2-Havells Building</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2376,6 +2378,8 @@
                     <select id="supervisorFacilityBuilding" onchange="onSupervisorBuildingChange()">
                         <option value="H2 Hostel">H2 Hostel</option>
                         <option value="A1-Bharti Academic Building">A1-Bharti Academic Building</option>
+                        <option value="A4-HDFC Innovation Hub">A4-HDFC Innovation Hub</option>
+                        <option value="A2-Havells Building">A2-Havells Building</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2393,7 +2397,6 @@
                         <option value="9">9</option>
                     </select>
                 </div>
-                <button class="btn btn-outline btn-sm facility-action" type="button" id="openStaffModeBtn" onclick="openSupervisorStaffMode()">👷 Open Staff Tools</button>
             </div>
 
             <div id="supervisorFacilityContainer">
@@ -2756,8 +2759,16 @@
 
     <script>
         // ──── API Client ────
-        const API_BASE = 'http://localhost:3001/api';
+        const API_BASE = `${window.location.origin}/api`;
         let authToken = localStorage.getItem('authToken');
+
+        // Warn if accessed from wrong port (backend only runs on 3001)
+        (function checkCorrectPort() {
+            const port = window.location.port;
+            if (port && port !== '3001') {
+                setTimeout(() => showToast(`Wrong URL — please open http://${window.location.hostname}:3001`), 800);
+            }
+        })();
 
         const api = {
             async request(method, path, body, isFormData = false) {
@@ -2912,58 +2923,482 @@
 
         const phraseTranslations = {
             hi: {
+                // App title
                 'Housekeeping Tracker - Campus Hygiene Monitoring System': 'हाउसकीपिंग ट्रैकर - कैंपस स्वच्छता निगरानी प्रणाली',
+                'Housekeeping Tracker - Inventory Export': 'हाउसकीपिंग ट्रैकर - इन्वेंटरी एक्सपोर्ट',
                 'Housekeeping Tracker': 'हाउसकीपिंग ट्रैकर',
                 'Campus Hygiene Monitoring System': 'कैंपस स्वच्छता निगरानी प्रणाली',
+                // Landing & login
                 'Supervisor/Admin? Sign in.': 'सुपरवाइज़र/एडमिन? साइन इन करें।',
                 'Open Plaksha helpdesk to submit your request': 'अनुरोध दर्ज करने के लिए प्लाक्षा हेल्पडेस्क खोलें',
                 'Complaint Box': 'कम्प्लेंट बॉक्स',
                 'Selected Login: -': 'चयनित: -',
                 'Admin Login': 'एडमिन लॉगिन',
                 'Supervisor Login': 'सुपरवाइज़र लॉगिन',
-                'In Progress': 'कार्य प्रगति में',
+                // Auth toasts
+                'Selected login type does not match your account': 'चुना गया लॉगिन प्रकार अकाउंट से मेल नहीं खाता',
+                'Email and mobile number are required': 'ईमेल और मोबाइल नंबर आवश्यक हैं',
+                'OTP sent to your registered mobile number': 'OTP पंजीकृत मोबाइल नंबर पर भेजा गया',
+                'New password must be at least 8 characters': 'नया पासवर्ड कम से कम 8 अक्षर का होना चाहिए',
+                'Password reset successful. Please login.': 'पासवर्ड सफलतापूर्वक रीसेट हुआ। कृपया लॉगिन करें।',
+                'Please choose login type first': 'पहले लॉगिन प्रकार चुनें',
+                'Please enter your email address': 'कृपया ईमेल पता दर्ज करें',
+                'Please enter your password': 'कृपया पासवर्ड दर्ज करें',
+                'Cannot reach the backend. Please open the app at http://localhost:3001': 'बैकेंड से कनेक्ट नहीं हो सका। कृपया ऐप को http://localhost:3001 पर खोलें',
+                'Server error. Please try again later.': 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।',
+                'Too many attempts. Please wait before trying again.': 'बहुत अधिक प्रयास। कृपया कुछ देर बाद पुनः प्रयास करें।',
+                'Invalid input. Please check your details.': 'अमान्य इनपुट। कृपया अपनी जानकारी जांचें।',
+                'Login failed. Please try again.': 'लॉगिन विफल। कृपया पुनः प्रयास करें।',
+                'Please fill all reset fields': 'सभी रीसेट फ़ील्ड भरें',
+                'Passwords do not match': 'पासवर्ड मेल नहीं खाते',
+                'Password not correct': 'पासवर्ड गलत है',
+                'Could not send OTP': 'OTP नहीं भेजा जा सका',
+                'OTP not correct': 'OTP गलत है',
+                // Password reset form
+                'Reset Password via OTP': 'OTP से पासवर्ड रीसेट करें',
+                'Registered Mobile Number': 'पंजीकृत मोबाइल नंबर',
+                'Confirm New Password': 'नया पासवर्ड पुष्टि करें',
+                'New Password': 'नया पासवर्ड',
+                'Send OTP': 'OTP भेजें',
+                'Reset Password': 'पासवर्ड रीसेट करें',
+                'Sending OTP...': 'OTP भेजा जा रहा है...',
+                'Resetting...': 'रीसेट हो रहा है...',
+                // Form labels
+                '📧 Email Address': '📧 ईमेल पता',
+                'Email Address': 'ईमेल पता',
+                'Washroom / Room Number': 'वॉशरूम / कमरा नंबर',
+                'Attach Image (Optional)': 'छवि संलग्न करें (वैकल्पिक)',
+                'Frequency (based on consumption)': 'आवृत्ति (खपत के आधार पर)',
+                'Notify Staff via': 'स्टाफ को सूचित करें',
+                'Reminder Type': 'रिमाइंडर प्रकार',
+                'Notes (optional)': 'नोट्स (वैकल्पिक)',
+                'Building & Washroom': 'भवन और वॉशरूम',
+                '📷 Photo Proof (Required)': '📷 फोटो प्रमाण (आवश्यक)',
+                'Items Restocked / Work Done': 'रीस्टॉक आइटम / किया गया कार्य',
+                'Task Type': 'कार्य प्रकार',
+                'Select Supervisor': 'सुपरवाइज़र चुनें',
+                'Select Building': 'भवन चुनें',
+                'Select washroom...': 'वॉशरूम चुनें...',
+                'No photo': 'कोई फोटो नहीं',
+                'Facility': 'सुविधा',
+                // Placeholders
+                'Enter your email': 'अपना ईमेल दर्ज करें',
+                'Enter your password': 'अपना पासवर्ड दर्ज करें',
+                'Enter registered email': 'पंजीकृत ईमेल दर्ज करें',
+                'Enter registered phone number': 'पंजीकृत फोन नंबर दर्ज करें',
+                'Enter OTP': 'OTP दर्ज करें',
+                'At least 8 characters': 'कम से कम 8 अक्षर',
+                'Re-enter new password': 'नया पासवर्ड पुनः दर्ज करें',
+                'e.g., Floor 2 - East Wing': 'जैसे, मंजिल 2 - पूर्व विंग',
+                'Describe the issue in detail...': 'समस्या का विवरण दर्ज करें...',
+                'Please comment on why this was not done': 'कृपया बताएं यह क्यों नहीं हुआ',
+                // Supply stats
+                'Supply values must be between 0 and 100': 'सप्लाई वैल्यू 0 से 100 के बीच होनी चाहिए',
+                'Supply stats updated successfully': 'सप्लाई स्टैट्स सफलतापूर्वक अपडेट हुए',
+                'Update Supply Stats': 'सप्लाई स्टैट्स अपडेट करें',
+                'Please choose a washroom': 'कृपया एक वॉशरूम चुनें',
+                // Facility tracker
+                'Facility tracker is running in offline demo mode': 'फैसिलिटी ट्रैकर ऑफलाइन डेमो मोड में चल रहा है',
+                'Comment is required when marking as not cleaned': 'न सफाई मार्क करते समय टिप्पणी आवश्यक है',
+                'Choose Yes or No to update cleaning status': 'सफाई स्थिति अपडेट करने के लिए हाँ या नहीं चुनें',
+                'Loading facility update log...': 'फैसिलिटी लॉग लोड हो रहा है...',
+                'Loading facility tracker...': 'फैसिलिटी ट्रैकर लोड हो रहा है...',
+                'Select another floor to continue.': 'जारी रखने के लिए दूसरी मंजिल चुनें।',
+                'No facilities found': 'कोई सुविधा नहीं मिली',
+                'Updated successfully': 'सफलतापूर्वक अपडेट हुआ',
+                // Camera
+                'Camera access failed. Please allow camera permission.': 'कैमरा एक्सेस विफल। कृपया कैमरा अनुमति दें।',
+                'Camera is still getting ready. Please try again.': 'कैमरा तैयार हो रहा है। कृपया पुनः प्रयास करें।',
+                'Camera not available on this device': 'इस डिवाइस पर कैमरा उपलब्ध नहीं है',
+                'Live camera is not available here. Opening file picker instead.': 'यहाँ लाइव कैमरा उपलब्ध नहीं। फ़ाइल पिकर खुल रहा है।',
+                'Camera access failed. Opening file picker instead.': 'कैमरा एक्सेस विफल। फ़ाइल पिकर खुल रहा है।',
+                'Live camera is required when marking as cleaned': 'साफ मार्क करते समय लाइव कैमरा आवश्यक है',
+                'Photo proof is required when marking as cleaned': 'साफ मार्क करते समय फोटो प्रमाण आवश्यक है',
+                'Point the camera at the cleaned facility, then capture the proof photo.': 'साफ की गई सुविधा की ओर कैमरा करें, फिर फोटो लें।',
+                '📷 Capture Live Cleaning Photo': '📷 लाइव सफाई फोटो लें',
+                'Checklist photo captured': 'चेकलिस्ट फोटो कैप्चर हुई',
+                'Checklist modal not found': 'चेकलिस्ट मोडल नहीं मिला',
+                'Unable to capture photo': 'फोटो नहीं ले सके',
+                // Washroom checklist
+                'Washroom cleaning checklist submitted ✅': 'वॉशरूम सफाई चेकलिस्ट सबमिट हुई ✅',
+                'No pending work submissions to approve.': 'अनुमोदन के लिए कोई लंबित कार्य सबमिशन नहीं।',
+                'Mark at least one checklist item as completed': 'कम से कम एक चेकलिस्ट आइटम पूर्ण चिह्नित करें',
+                'Checklist saved locally (offline mode)': 'चेकलिस्ट स्थानीय रूप से सहेजी (ऑफलाइन मोड)',
+                'Checklist submitted successfully': 'चेकलिस्ट सफलतापूर्वक सबमिट हुई',
+                'No checklist submissions found.': 'कोई चेकलिस्ट सबमिशन नहीं मिला।',
+                '🚻 Washroom Cleaning Checklist': '🚻 वॉशरूम सफाई चेकलिस्ट',
+                'Washroom Cleaning Checklist': 'वॉशरूम सफाई चेकलिस्ट',
+                'Washroom Checklists': 'वॉशरूम चेकलिस्ट',
+                '📋 Checklist Details': '📋 चेकलिस्ट विवरण',
+                // Checklist items
+                'Sanitizer Refilled': 'सैनिटाइज़र भरा गया',
+                'Tissue Restocked': 'टिश्यू भरा गया',
+                'Dustbin Cleared': 'डस्टबिन साफ किया गया',
+                'Sinks Cleaned': 'सिंक साफ किए गए',
+                'Soaps Refilled': 'साबुन भरे गए',
+                'Floor Mopped': 'फर्श पोंछा गया',
+                // Staff dashboard
+                "You don't have any washrooms assigned for today.": 'आज के लिए कोई वॉशरूम असाइन नहीं है।',
+                '📷 Upload Restocking / Cleaning Proof': '📷 रीस्टॉकिंग / सफाई प्रमाण अपलोड करें',
+                'Please fill all fields and attach a photo': 'सभी फ़ील्ड भरें और फोटो लगाएं',
+                'Upload & Submit for Verification': 'अपलोड और सत्यापन के लिए सबमिट करें',
+                'Uploading & Verifying...': 'अपलोड और सत्यापन हो रहा है...',
+                'of completed work': 'किए गए कार्य का',
+                'Take or upload photo': 'फोटो लें या अपलोड करें',
+                '📷 Upload Proof': '📷 प्रमाण अपलोड',
+                'Flagged for maintenance': 'रखरखाव के लिए फ्लैग किया',
+                'Marked in progress': 'प्रगति में चिह्नित',
+                'washrooms assigned': 'वॉशरूम असाइन',
+                '📷 Upload Work': '📷 कार्य अपलोड करें',
+                'Assigned Issues': 'असाइन समस्याएं',
+                'My Tasks': 'मेरे कार्य',
+                // Admin dashboard
+                'This action is only for false report complaints': 'यह क्रिया केवल झूठी रिपोर्ट शिकायतों के लिए है',
+                'No supervisor assigned for this building': 'इस भवन के लिए कोई सुपरवाइज़र असाइन नहीं',
+                'Inventory export opened for PDF save': 'PDF सेव के लिए इन्वेंटरी एक्सपोर्ट खुला',
+                'Popup blocked. Please allow popups for PDF export.': 'पॉपअप ब्लॉक हुआ। PDF एक्सपोर्ट के लिए पॉपअप अनुमति दें।',
+                'Inventory exported as CSV': 'इन्वेंटरी CSV के रूप में एक्सपोर्ट हुई',
+                'Message sent to supervisor': 'सुपरवाइज़र को संदेश भेजा गया',
+                'Work rejected — staff notified ❌': 'कार्य अस्वीकृत — स्टाफ सूचित ❌',
+                'Work rejected ❌': 'कार्य अस्वीकृत ❌',
+                'Work approved ✅': 'कार्य स्वीकृत ✅',
+                'Work updates will appear here.': 'कार्य अपडेट यहाँ दिखेंगे।',
+                'No live updates yet': 'अभी कोई लाइव अपडेट नहीं',
+                'No live updates yet.': 'अभी कोई लाइव अपडेट नहीं।',
+                'No live restocking updates yet.': 'अभी कोई लाइव रीस्टॉक अपडेट नहीं।',
+                'Assign Building to Supervisor': 'सुपरवाइज़र को भवन असाइन करें',
+                'Please select a staff member': 'कृपया एक स्टाफ सदस्य चुनें',
+                'Please select a supervisor': 'कृपया एक सुपरवाइज़र चुनें',
+                'Unable to delete complaint': 'शिकायत नहीं हटाई जा सकी',
+                'Complaint deleted': 'शिकायत हटाई गई',
+                'Reminder deleted': 'रिमाइंडर हटाया गया',
+                // Complaint form & sections
+                'Fill in additional details and submit your complaint': 'अतिरिक्त विवरण भरें और शिकायत सबमिट करें',
+                'Failed to submit complaint. Please try again.': 'शिकायत सबमिट करने में विफल। पुनः प्रयास करें।',
+                'Description must be at least 10 characters': 'विवरण कम से कम 10 अक्षर का होना चाहिए',
+                'AI detection failed. Please select a category manually.': 'AI डिटेक्शन विफल। कृपया मैन्युअल श्रेणी चुनें।',
+                'Please fill in room number and description': 'कमरा नंबर और विवरण भरें',
+                '📋 Complaint Details': '📋 शिकायत विवरण',
+                'Complaint submitted!': 'शिकायत सबमिट हुई!',
+                'Submit Complaint': 'शिकायत सबमिट करें',
+                'Report an Issue': 'समस्या रिपोर्ट करें',
                 'No complaints found': 'कोई शिकायत नहीं मिली',
                 'No complaints yet': 'अभी कोई शिकायत नहीं',
+                'Click the button above to report an issue.': 'समस्या रिपोर्ट करने के लिए ऊपर बटन दबाएं।',
+                '+ Report Issue': '+ समस्या रिपोर्ट करें',
+                '📷 Show Photos': '📷 फोटो दिखाएं',
+                '📷 Hide Photos': '📷 फोटो छुपाएं',
+                // Section headers
+                '🧻 Washroom Supply Status & Restocking Timeline': '🧻 वॉशरूम सप्लाई स्थिति और रीस्टॉकिंग',
+                '📦 Full Stock Inventory (Building-wise)': '📦 पूर्ण स्टॉक इन्वेंटरी (भवनवार)',
+                "Today's Cleaning & Restocking Tasks": 'आज के सफाई और रीस्टॉकिंग कार्य',
+                '⏰ Set Restocking Reminder': '⏰ रीस्टॉकिंग रिमाइंडर सेट करें',
+                '🕒 Live Restocking Feed': '🕒 लाइव रीस्टॉकिंग फीड',
+                '📦 Stock Inventory': '📦 स्टॉक इन्वेंटरी',
+                '🧻 Restocking Status': '🧻 रीस्टॉकिंग स्थिति',
+                '📋 My Complaints': '📋 मेरी शिकायतें',
+                '📷 Refill Photos': '📷 रिफिल फोटो',
+                'Issues in Your Area': 'आपके क्षेत्र में समस्याएं',
+                'My Complaints': 'मेरी शिकायतें',
+                'In Progress': 'कार्य प्रगति में',
+                // Inventory photo modal
+                'Select a washroom row to view the latest refill photos.': 'नवीनतम रिफिल फोटो देखने के लिए वॉशरूम पंक्ति चुनें।',
+                'No supervisor refill photos found for this washroom yet.': 'इस वॉशरूम के लिए अभी रिफिल फोटो उपलब्ध नहीं।',
+                'Loading latest refill photos...': 'नवीनतम रिफिल फोटो लोड हो रही हैं...',
+                'No recent submission': 'कोई हालिया सबमिशन नहीं',
+                // Reminder modal
+                'Restocking (Tissues, Soap, Sanitizer)': 'रीस्टॉकिंग (टिश्यू, साबुन, सैनिटाइज़र)',
+                'Restocking (Tissues, Soap)': 'रीस्टॉकिंग (टिश्यू, साबुन)',
+                'Every 2 Hours (Supervisor Sweep)': 'हर 2 घंटे (सुपरवाइज़र स्वीप)',
+                'Every 4 Hours (High Traffic)': 'हर 4 घंटे (अधिक भीड़)',
+                'Every 8 Hours (Medium Traffic)': 'हर 8 घंटे (मध्यम भीड़)',
+                'Every 12 Hours (Low Traffic)': 'हर 12 घंटे (कम भीड़)',
+                'Refilling Dispensers': 'डिस्पेंसर भरना',
+                'Once Daily': 'दिन में एक बार',
+                'Save Reminder': 'रिमाइंडर सहेजें',
+                // Complaint categories
+                'Let AI Detect Automatically': 'AI से अपने आप पहचानें',
+                'Hygiene / Supplies Empty': 'स्वच्छता / सप्लाई खत्म',
+                'Appliance (AC/Fan/Geyser)': 'उपकरण (AC/पंखा/गीज़र)',
+                'False Reporting by Staff': 'स्टाफ द्वारा झूठी रिपोर्ट',
+                'Cleaning Not Done': 'सफाई नहीं हुई',
+                'Pest Control': 'कीट नियंत्रण',
+                'Internet/WiFi': 'इंटरनेट/वाईफाई',
+                'Maintenance': 'रखरखाव',
+                'Plumbing': 'पाइपलाइन',
+                'Electrical': 'बिजली संबंधी',
+                'Furniture': 'फर्नीचर',
+                'Security': 'सुरक्षा',
+                'Cleaning': 'सफाई',
+                'Noise': 'शोर',
+                'Other': 'अन्य',
+                // Task card badges
+                '⚠️ OVERDUE': '⚠️ विलंबित',
+                'LOW STOCK': 'कम स्टॉक',
+                'Cleaned ✓': 'साफ ✓',
+                'Not cleaned': 'साफ नहीं',
+                // Empty states
                 'No tasks assigned': 'कोई कार्य असाइन नहीं',
                 'No washrooms assigned': 'कोई वॉशरूम असाइन नहीं',
                 'No reminders set': 'कोई रिमाइंडर सेट नहीं',
-                'No live updates yet.': 'अभी कोई लाइव अपडेट नहीं।',
-                'No live restocking updates yet.': 'अभी कोई लाइव रीस्टॉक अपडेट नहीं।',
-                'No pending work submissions to approve.': 'अनुमोदन के लिए कोई लंबित कार्य सबमिशन नहीं।',
-                'Reset Password via OTP': 'OTP से पासवर्ड रीसेट करें',
-                'Send OTP': 'OTP भेजें',
-                'Reset Password': 'पासवर्ड रीसेट करें',
-                'Update Supply Stats': 'सप्लाई स्टैट्स अपडेट करें',
-                'Supply values must be between 0 and 100': 'सप्लाई वैल्यू 0 से 100 के बीच होनी चाहिए',
-                'Please choose a washroom': 'कृपया एक वॉशरूम चुनें',
-                'Supply stats updated successfully': 'सप्लाई स्टैट्स सफलतापूर्वक अपडेट हुए',
+                'No pending issues in your area.': 'आपके क्षेत्र में कोई लंबित समस्या नहीं।',
+                'No restocking data yet': 'अभी कोई रीस्टॉकिंग डेटा नहीं',
+                'All caught up!': 'सब ठीक है!',
+                'Loading…': 'लोड हो रहा है...',
+                // Buttons
+                'Mobile Push': 'मोबाइल पुश',
+                'Portal': 'पोर्टल',
+                'Cancel': 'रद्द करें',
+                'Assign': 'असाइन करें',
+                'Close': 'बंद करें',
+                'Load': 'लोड करें',
+                // Extra missing phrases
+                'Sign In': 'साइन इन',
+                'Forgot Password?': 'पासवर्ड भूल गए?',
+                'Request failed': 'अनुरोध विफल',
+                'Change': 'बदलें',
+                'OK': 'ठीक है',
+                'Yes': 'हाँ',
+                'No': 'नहीं',
             },
             pa: {
+                // App title
                 'Housekeeping Tracker - Campus Hygiene Monitoring System': 'ਹਾਊਸਕੀਪਿੰਗ ਟ੍ਰੈਕਰ - ਕੈਂਪਸ ਸਫ਼ਾਈ ਨਿਗਰਾਨੀ ਸਿਸਟਮ',
+                'Housekeeping Tracker - Inventory Export': 'ਹਾਊਸਕੀਪਿੰਗ ਟ੍ਰੈਕਰ - ਇਨਵੈਂਟਰੀ ਐਕਸਪੋਰਟ',
                 'Housekeeping Tracker': 'ਹਾਊਸਕੀਪਿੰਗ ਟ੍ਰੈਕਰ',
                 'Campus Hygiene Monitoring System': 'ਕੈਂਪਸ ਸਫ਼ਾਈ ਨਿਗਰਾਨੀ ਸਿਸਟਮ',
+                // Landing & login
                 'Supervisor/Admin? Sign in.': 'ਸੁਪਰਵਾਈਜ਼ਰ/ਐਡਮਿਨ? ਸਾਈਨ ਇਨ ਕਰੋ।',
                 'Open Plaksha helpdesk to submit your request': 'ਬੇਨਤੀ ਲਈ ਪਲਾਕਸ਼ਾ ਹੈਲਪਡੈਸਕ ਖੋਲ੍ਹੋ',
                 'Complaint Box': 'ਸ਼ਿਕਾਇਤ ਬਾਕਸ',
                 'Selected Login: -': 'ਚੁਣਿਆ: -',
                 'Admin Login': 'ਐਡਮਿਨ ਲਾਗਇਨ',
                 'Supervisor Login': 'ਸੁਪਰਵਾਈਜ਼ਰ ਲਾਗਇਨ',
-                'In Progress': 'ਪ੍ਰਗਤੀ ਵਿੱਚ',
-                'No complaints found': 'ਕੋਈ ਸ਼ਿਕਾਇਤ ਨਹੀਂ ਮਿਲੀ',
-                'No complaints yet': 'ਹਾਲੇ ਕੋਈ ਸ਼ਿਕਾਇਤ ਨਹੀਂ',
-                'No tasks assigned': 'ਕੋਈ ਕੰਮ ਅਸਾਈਨ ਨਹੀਂ',
-                'No washrooms assigned': 'ਕੋਈ ਵਾਸ਼ਰੂਮ ਅਸਾਈਨ ਨਹੀਂ',
-                'No reminders set': 'ਕੋਈ ਯਾਦ ਦਿਹਾਣੀ ਸੈੱਟ ਨਹੀਂ',
-                'No live updates yet.': 'ਹਾਲੇ ਕੋਈ ਲਾਈਵ ਅਪਡੇਟ ਨਹੀਂ।',
-                'No live restocking updates yet.': 'ਹਾਲੇ ਕੋਈ ਲਾਈਵ ਰੀਸਟੌਕ ਅਪਡੇਟ ਨਹੀਂ।',
-                'No pending work submissions to approve.': 'ਮਨਜ਼ੂਰੀ ਲਈ ਕੋਈ ਲੰਬਿਤ ਸਬਮਿਸ਼ਨ ਨਹੀਂ।',
+                // Auth toasts
+                'Selected login type does not match your account': 'ਚੁਣੀ ਲਾਗਇਨ ਕਿਸਮ ਤੁਹਾਡੇ ਖਾਤੇ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ',
+                'Email and mobile number are required': 'ਈਮੇਲ ਅਤੇ ਮੋਬਾਈਲ ਨੰਬਰ ਲਾਜ਼ਮੀ ਹਨ',
+                'OTP sent to your registered mobile number': 'OTP ਰਜਿਸਟਰਡ ਮੋਬਾਈਲ ਨੰਬਰ ਤੇ ਭੇਜਿਆ ਗਿਆ',
+                'New password must be at least 8 characters': 'ਨਵਾਂ ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ',
+                'Password reset successful. Please login.': 'ਪਾਸਵਰਡ ਸਫਲਤਾਪੂਰਵਕ ਰੀਸੈੱਟ ਹੋਇਆ। ਕਿਰਪਾ ਕਰਕੇ ਲਾਗਇਨ ਕਰੋ।',
+                'Please choose login type first': 'ਪਹਿਲਾਂ ਲਾਗਇਨ ਕਿਸਮ ਚੁਣੋ',
+                'Please enter your email address': 'ਕਿਰਪਾ ਕਰਕੇ ਈਮੇਲ ਪਤਾ ਦਰਜ ਕਰੋ',
+                'Please enter your password': 'ਕਿਰਪਾ ਕਰਕੇ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ',
+                'Cannot reach the backend. Please open the app at http://localhost:3001': 'ਬੈਕਐਂਡ ਨਾਲ ਕਨੈਕਟ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਐਪ ਨੂੰ http://localhost:3001 ਤੇ ਖੋਲ੍ਹੋ',
+                'Server error. Please try again later.': 'ਸਰਵਰ ਗੜਬੜੀ। ਕਿਰਪਾ ਕਰਕੇ ਬਾਅਦ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+                'Too many attempts. Please wait before trying again.': 'ਬਹੁਤ ਜ਼ਿਆਦਾ ਕੋਸ਼ਿਸ਼ਾਂ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਝ ਦੇਰ ਬਾਅਦ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+                'Invalid input. Please check your details.': 'ਅਵੈਧ ਜਾਣਕਾਰੀ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਵੇਰਵੇ ਜਾਂਚੋ।',
+                'Login failed. Please try again.': 'ਲਾਗਇਨ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+                'Please fill all reset fields': 'ਸਾਰੇ ਰੀਸੈੱਟ ਖੇਤਰ ਭਰੋ',
+                'Passwords do not match': 'ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ',
+                'Password not correct': 'ਪਾਸਵਰਡ ਗਲਤ ਹੈ',
+                'Could not send OTP': 'OTP ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਿਆ',
+                'OTP not correct': 'OTP ਗਲਤ ਹੈ',
+                // Password reset form
                 'Reset Password via OTP': 'OTP ਨਾਲ ਪਾਸਵਰਡ ਰੀਸੈੱਟ ਕਰੋ',
+                'Registered Mobile Number': 'ਰਜਿਸਟਰਡ ਮੋਬਾਈਲ ਨੰਬਰ',
+                'Confirm New Password': 'ਨਵਾਂ ਪਾਸਵਰਡ ਪੁਸ਼ਟੀ ਕਰੋ',
+                'New Password': 'ਨਵਾਂ ਪਾਸਵਰਡ',
                 'Send OTP': 'OTP ਭੇਜੋ',
                 'Reset Password': 'ਪਾਸਵਰਡ ਰੀਸੈੱਟ ਕਰੋ',
-                'Update Supply Stats': 'ਸਪਲਾਈ ਸਟੈਟਸ ਅਪਡੇਟ ਕਰੋ',
+                'Sending OTP...': 'OTP ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...',
+                'Resetting...': 'ਰੀਸੈੱਟ ਹੋ ਰਿਹਾ ਹੈ...',
+                // Form labels
+                '📧 Email Address': '📧 ਈਮੇਲ ਪਤਾ',
+                'Email Address': 'ਈਮੇਲ ਪਤਾ',
+                'Washroom / Room Number': 'ਵਾਸ਼ਰੂਮ / ਕਮਰਾ ਨੰਬਰ',
+                'Attach Image (Optional)': 'ਤਸਵੀਰ ਜੋੜੋ (ਵਿਕਲਪਿਕ)',
+                'Frequency (based on consumption)': 'ਆਵ੍ਰਿੱਤੀ (ਖਪਤ ਦੇ ਆਧਾਰ ਤੇ)',
+                'Notify Staff via': 'ਸਟਾਫ ਨੂੰ ਸੂਚਿਤ ਕਰੋ',
+                'Reminder Type': 'ਯਾਦ ਦਿਹਾਣੀ ਕਿਸਮ',
+                'Notes (optional)': 'ਨੋਟਸ (ਵਿਕਲਪਿਕ)',
+                'Building & Washroom': 'ਇਮਾਰਤ ਅਤੇ ਵਾਸ਼ਰੂਮ',
+                '📷 Photo Proof (Required)': '📷 ਫੋਟੋ ਸਬੂਤ (ਲਾਜ਼ਮੀ)',
+                'Items Restocked / Work Done': 'ਰੀਸਟੌਕ ਆਈਟਮ / ਕੀਤਾ ਕੰਮ',
+                'Task Type': 'ਕੰਮ ਦੀ ਕਿਸਮ',
+                'Select Supervisor': 'ਸੁਪਰਵਾਈਜ਼ਰ ਚੁਣੋ',
+                'Select Building': 'ਇਮਾਰਤ ਚੁਣੋ',
+                'Select washroom...': 'ਵਾਸ਼ਰੂਮ ਚੁਣੋ...',
+                'No photo': 'ਕੋਈ ਫੋਟੋ ਨਹੀਂ',
+                'Facility': 'ਸਹੂਲਤ',
+                // Placeholders
+                'Enter your email': 'ਆਪਣਾ ਈਮੇਲ ਦਰਜ ਕਰੋ',
+                'Enter your password': 'ਆਪਣਾ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ',
+                'Enter registered email': 'ਰਜਿਸਟਰਡ ਈਮੇਲ ਦਰਜ ਕਰੋ',
+                'Enter registered phone number': 'ਰਜਿਸਟਰਡ ਫੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ',
+                'Enter OTP': 'OTP ਦਰਜ ਕਰੋ',
+                'At least 8 characters': 'ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ',
+                'Re-enter new password': 'ਨਵਾਂ ਪਾਸਵਰਡ ਦੁਬਾਰਾ ਦਰਜ ਕਰੋ',
+                'e.g., Floor 2 - East Wing': 'ਜਿਵੇਂ, ਮੰਜ਼ਲ 2 - ਪੂਰਬੀ ਖੇਤਰ',
+                'Describe the issue in detail...': 'ਸਮੱਸਿਆ ਦਾ ਵੇਰਵਾ ਦਿਓ...',
+                'Please comment on why this was not done': 'ਕਿਰਪਾ ਦੱਸੋ ਇਹ ਕਿਉਂ ਨਹੀਂ ਹੋਇਆ',
+                // Supply stats
                 'Supply values must be between 0 and 100': 'ਸਪਲਾਈ ਮੁੱਲ 0 ਤੋਂ 100 ਦੇ ਵਿਚਕਾਰ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ',
-                'Please choose a washroom': 'ਕਿਰਪਾ ਕਰਕੇ ਵਾਸ਼ਰੂਮ ਚੁਣੋ',
                 'Supply stats updated successfully': 'ਸਪਲਾਈ ਸਟੈਟਸ ਸਫਲਤਾਪੂਰਵਕ ਅਪਡੇਟ ਹੋਏ',
+                'Update Supply Stats': 'ਸਪਲਾਈ ਸਟੈਟਸ ਅਪਡੇਟ ਕਰੋ',
+                'Please choose a washroom': 'ਕਿਰਪਾ ਕਰਕੇ ਵਾਸ਼ਰੂਮ ਚੁਣੋ',
+                // Facility tracker
+                'Facility tracker is running in offline demo mode': 'ਫੈਸਿਲਿਟੀ ਟ੍ਰੈਕਰ ਆਫਲਾਈਨ ਡੈਮੋ ਮੋਡ ਵਿੱਚ ਚੱਲ ਰਿਹਾ ਹੈ',
+                'Comment is required when marking as not cleaned': 'ਸਾਫ਼ ਨਹੀਂ ਮਾਰਕ ਕਰਦੇ ਸਮੇਂ ਟਿੱਪਣੀ ਲਾਜ਼ਮੀ ਹੈ',
+                'Choose Yes or No to update cleaning status': 'ਸਫ਼ਾਈ ਸਥਿਤੀ ਅਪਡੇਟ ਕਰਨ ਲਈ ਹਾਂ ਜਾਂ ਨਹੀਂ ਚੁਣੋ',
+                'Loading facility update log...': 'ਫੈਸਿਲਿਟੀ ਲੌਗ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...',
+                'Loading facility tracker...': 'ਫੈਸਿਲਿਟੀ ਟ੍ਰੈਕਰ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...',
+                'Select another floor to continue.': 'ਜਾਰੀ ਰੱਖਣ ਲਈ ਹੋਰ ਮੰਜ਼ਲ ਚੁਣੋ।',
+                'No facilities found': 'ਕੋਈ ਸਹੂਲਤ ਨਹੀਂ ਮਿਲੀ',
+                'Updated successfully': 'ਸਫਲਤਾਪੂਰਵਕ ਅਪਡੇਟ ਹੋਇਆ',
+                // Camera
+                'Camera access failed. Please allow camera permission.': 'ਕੈਮਰਾ ਐਕਸੈਸ ਅਸਫਲ। ਕਿਰਪਾ ਕੈਮਰਾ ਇਜਾਜ਼ਤ ਦਿਓ।',
+                'Camera is still getting ready. Please try again.': 'ਕੈਮਰਾ ਅਜੇ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ। ਕਿਰਪਾ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+                'Camera not available on this device': 'ਇਸ ਡਿਵਾਈਸ ਤੇ ਕੈਮਰਾ ਉਪਲਬਧ ਨਹੀਂ',
+                'Live camera is not available here. Opening file picker instead.': 'ਇੱਥੇ ਲਾਈਵ ਕੈਮਰਾ ਉਪਲਬਧ ਨਹੀਂ। ਫਾਈਲ ਪਿਕਰ ਖੁੱਲ੍ਹ ਰਿਹਾ ਹੈ।',
+                'Camera access failed. Opening file picker instead.': 'ਕੈਮਰਾ ਐਕਸੈਸ ਅਸਫਲ। ਫਾਈਲ ਪਿਕਰ ਖੁੱਲ੍ਹ ਰਿਹਾ ਹੈ।',
+                'Live camera is required when marking as cleaned': 'ਸਾਫ਼ ਮਾਰਕ ਕਰਦੇ ਸਮੇਂ ਲਾਈਵ ਕੈਮਰਾ ਲਾਜ਼ਮੀ ਹੈ',
+                'Photo proof is required when marking as cleaned': 'ਸਾਫ਼ ਮਾਰਕ ਕਰਦੇ ਸਮੇਂ ਫੋਟੋ ਸਬੂਤ ਲਾਜ਼ਮੀ ਹੈ',
+                'Point the camera at the cleaned facility, then capture the proof photo.': 'ਸਾਫ਼ ਕੀਤੀ ਸਹੂਲਤ ਵੱਲ ਕੈਮਰਾ ਕਰੋ, ਫਿਰ ਫੋਟੋ ਲਓ।',
+                '📷 Capture Live Cleaning Photo': '📷 ਲਾਈਵ ਸਫ਼ਾਈ ਫੋਟੋ ਲਓ',
+                'Checklist photo captured': 'ਚੈੱਕਲਿਸਟ ਫੋਟੋ ਕੈਪਚਰ ਹੋਈ',
+                'Checklist modal not found': 'ਚੈੱਕਲਿਸਟ ਮੋਡਲ ਨਹੀਂ ਮਿਲਿਆ',
+                'Unable to capture photo': 'ਫੋਟੋ ਨਹੀਂ ਲਈ ਜਾ ਸਕੀ',
+                // Washroom checklist
+                'Washroom cleaning checklist submitted ✅': 'ਵਾਸ਼ਰੂਮ ਸਫ਼ਾਈ ਚੈੱਕਲਿਸਟ ਜਮ੍ਹਾ ਹੋਈ ✅',
+                'No pending work submissions to approve.': 'ਮਨਜ਼ੂਰੀ ਲਈ ਕੋਈ ਲੰਬਿਤ ਸਬਮਿਸ਼ਨ ਨਹੀਂ।',
+                'Mark at least one checklist item as completed': 'ਘੱਟੋ-ਘੱਟ ਇੱਕ ਚੈੱਕਲਿਸਟ ਆਈਟਮ ਪੂਰਾ ਚਿੰਨ੍ਹਿਤ ਕਰੋ',
+                'Checklist saved locally (offline mode)': 'ਚੈੱਕਲਿਸਟ ਸਥਾਨਕ ਤੌਰ ਤੇ ਸੇਵ ਹੋਈ (ਆਫਲਾਈਨ ਮੋਡ)',
+                'Checklist submitted successfully': 'ਚੈੱਕਲਿਸਟ ਸਫਲਤਾਪੂਰਵਕ ਜਮ੍ਹਾ ਹੋਈ',
+                'No checklist submissions found.': 'ਕੋਈ ਚੈੱਕਲਿਸਟ ਸਬਮਿਸ਼ਨ ਨਹੀਂ ਮਿਲੀ।',
+                '🚻 Washroom Cleaning Checklist': '🚻 ਵਾਸ਼ਰੂਮ ਸਫ਼ਾਈ ਚੈੱਕਲਿਸਟ',
+                'Washroom Cleaning Checklist': 'ਵਾਸ਼ਰੂਮ ਸਫ਼ਾਈ ਚੈੱਕਲਿਸਟ',
+                'Washroom Checklists': 'ਵਾਸ਼ਰੂਮ ਚੈੱਕਲਿਸਟ',
+                '📋 Checklist Details': '📋 ਚੈੱਕਲਿਸਟ ਵੇਰਵਾ',
+                // Checklist items
+                'Sanitizer Refilled': 'ਸੈਨਿਟਾਈਜ਼ਰ ਭਰਿਆ ਗਿਆ',
+                'Tissue Restocked': 'ਟਿਸ਼ੂ ਭਰਿਆ ਗਿਆ',
+                'Dustbin Cleared': 'ਡਸਟਬਿਨ ਸਾਫ਼ ਕੀਤਾ ਗਿਆ',
+                'Sinks Cleaned': 'ਸਿੰਕ ਸਾਫ਼ ਕੀਤੇ ਗਏ',
+                'Soaps Refilled': 'ਸਾਬਣ ਭਰਿਆ ਗਿਆ',
+                'Floor Mopped': 'ਫਰਸ਼ ਪੂੰਝਿਆ ਗਿਆ',
+                // Staff dashboard
+                "You don't have any washrooms assigned for today.": 'ਅੱਜ ਲਈ ਕੋਈ ਵਾਸ਼ਰੂਮ ਅਸਾਈਨ ਨਹੀਂ ਹੈ।',
+                '📷 Upload Restocking / Cleaning Proof': '📷 ਰੀਸਟੌਕਿੰਗ / ਸਫ਼ਾਈ ਸਬੂਤ ਅਪਲੋਡ ਕਰੋ',
+                'Please fill all fields and attach a photo': 'ਸਾਰੇ ਖੇਤਰ ਭਰੋ ਅਤੇ ਫੋਟੋ ਲਗਾਓ',
+                'Upload & Submit for Verification': 'ਅਪਲੋਡ ਅਤੇ ਤਸਦੀਕ ਲਈ ਜਮ੍ਹਾ ਕਰੋ',
+                'Uploading & Verifying...': 'ਅਪਲੋਡ ਅਤੇ ਤਸਦੀਕ ਹੋ ਰਹੀ ਹੈ...',
+                'of completed work': 'ਕੀਤੇ ਕੰਮ ਦਾ',
+                'Take or upload photo': 'ਫੋਟੋ ਲਓ ਜਾਂ ਅਪਲੋਡ ਕਰੋ',
+                '📷 Upload Proof': '📷 ਸਬੂਤ ਅਪਲੋਡ',
+                'Flagged for maintenance': 'ਰੱਖ-ਰਖਾਵ ਲਈ ਫਲੈਗ ਕੀਤਾ',
+                'Marked in progress': 'ਪ੍ਰਗਤੀ ਵਿੱਚ ਚਿੰਨ੍ਹਿਤ',
+                'washrooms assigned': 'ਵਾਸ਼ਰੂਮ ਅਸਾਈਨ',
+                '📷 Upload Work': '📷 ਕੰਮ ਅਪਲੋਡ ਕਰੋ',
+                'Assigned Issues': 'ਅਸਾਈਨ ਸਮੱਸਿਆਵਾਂ',
+                'My Tasks': 'ਮੇਰੇ ਕੰਮ',
+                // Admin dashboard
+                'This action is only for false report complaints': 'ਇਹ ਕਾਰਵਾਈ ਸਿਰਫ਼ ਝੂਠੀ ਰਿਪੋਰਟ ਸ਼ਿਕਾਇਤਾਂ ਲਈ ਹੈ',
+                'No supervisor assigned for this building': 'ਇਸ ਇਮਾਰਤ ਲਈ ਕੋਈ ਸੁਪਰਵਾਈਜ਼ਰ ਅਸਾਈਨ ਨਹੀਂ',
+                'Inventory export opened for PDF save': 'PDF ਸੇਵ ਲਈ ਇਨਵੈਂਟਰੀ ਐਕਸਪੋਰਟ ਖੁੱਲ੍ਹਿਆ',
+                'Popup blocked. Please allow popups for PDF export.': 'ਪੌਪਅੱਪ ਬਲੌਕ ਹੋਇਆ। PDF ਐਕਸਪੋਰਟ ਲਈ ਪੌਪਅੱਪ ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ।',
+                'Inventory exported as CSV': 'ਇਨਵੈਂਟਰੀ CSV ਵਜੋਂ ਐਕਸਪੋਰਟ ਹੋਈ',
+                'Message sent to supervisor': 'ਸੁਪਰਵਾਈਜ਼ਰ ਨੂੰ ਸੁਨੇਹਾ ਭੇਜਿਆ ਗਿਆ',
+                'Work rejected — staff notified ❌': 'ਕੰਮ ਅਸਵੀਕਾਰ — ਸਟਾਫ ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ❌',
+                'Work rejected ❌': 'ਕੰਮ ਅਸਵੀਕਾਰ ❌',
+                'Work approved ✅': 'ਕੰਮ ਮਨਜ਼ੂਰ ✅',
+                'Work updates will appear here.': 'ਕੰਮ ਦੇ ਅਪਡੇਟ ਇੱਥੇ ਦਿਖਣਗੇ।',
+                'No live updates yet': 'ਹਾਲੇ ਕੋਈ ਲਾਈਵ ਅਪਡੇਟ ਨਹੀਂ',
+                'No live updates yet.': 'ਹਾਲੇ ਕੋਈ ਲਾਈਵ ਅਪਡੇਟ ਨਹੀਂ।',
+                'No live restocking updates yet.': 'ਹਾਲੇ ਕੋਈ ਲਾਈਵ ਰੀਸਟੌਕ ਅਪਡੇਟ ਨਹੀਂ।',
+                'Assign Building to Supervisor': 'ਸੁਪਰਵਾਈਜ਼ਰ ਨੂੰ ਇਮਾਰਤ ਅਸਾਈਨ ਕਰੋ',
+                'Please select a staff member': 'ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਸਟਾਫ ਮੈਂਬਰ ਚੁਣੋ',
+                'Please select a supervisor': 'ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਸੁਪਰਵਾਈਜ਼ਰ ਚੁਣੋ',
+                'Unable to delete complaint': 'ਸ਼ਿਕਾਇਤ ਨਹੀਂ ਮਿਟਾਈ ਜਾ ਸਕੀ',
+                'Complaint deleted': 'ਸ਼ਿਕਾਇਤ ਮਿਟਾਈ ਗਈ',
+                'Reminder deleted': 'ਯਾਦ ਦਿਹਾਣੀ ਮਿਟਾਈ ਗਈ',
+                // Complaint form & sections
+                'Fill in additional details and submit your complaint': 'ਹੋਰ ਵੇਰਵੇ ਭਰੋ ਅਤੇ ਸ਼ਿਕਾਇਤ ਜਮ੍ਹਾ ਕਰੋ',
+                'Failed to submit complaint. Please try again.': 'ਸ਼ਿਕਾਇਤ ਜਮ੍ਹਾ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+                'Description must be at least 10 characters': 'ਵੇਰਵਾ ਘੱਟੋ-ਘੱਟ 10 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ',
+                'AI detection failed. Please select a category manually.': 'AI ਡਿਟੈਕਸ਼ਨ ਅਸਫਲ। ਕਿਰਪਾ ਹੱਥੀਂ ਸ਼੍ਰੇਣੀ ਚੁਣੋ।',
+                'Please fill in room number and description': 'ਕਮਰਾ ਨੰਬਰ ਅਤੇ ਵੇਰਵਾ ਭਰੋ',
+                '📋 Complaint Details': '📋 ਸ਼ਿਕਾਇਤ ਵੇਰਵਾ',
+                'Complaint submitted!': 'ਸ਼ਿਕਾਇਤ ਜਮ੍ਹਾ ਹੋਈ!',
+                'Submit Complaint': 'ਸ਼ਿਕਾਇਤ ਜਮ੍ਹਾ ਕਰੋ',
+                'Report an Issue': 'ਸਮੱਸਿਆ ਰਿਪੋਰਟ ਕਰੋ',
+                'No complaints found': 'ਕੋਈ ਸ਼ਿਕਾਇਤ ਨਹੀਂ ਮਿਲੀ',
+                'No complaints yet': 'ਹਾਲੇ ਕੋਈ ਸ਼ਿਕਾਇਤ ਨਹੀਂ',
+                'Click the button above to report an issue.': 'ਸਮੱਸਿਆ ਰਿਪੋਰਟ ਕਰਨ ਲਈ ਉੱਪਰ ਬਟਨ ਦਬਾਓ।',
+                '+ Report Issue': '+ ਸਮੱਸਿਆ ਰਿਪੋਰਟ ਕਰੋ',
+                '📷 Show Photos': '📷 ਫੋਟੋ ਦਿਖਾਓ',
+                '📷 Hide Photos': '📷 ਫੋਟੋ ਲੁਕਾਓ',
+                // Section headers
+                '🧻 Washroom Supply Status & Restocking Timeline': '🧻 ਵਾਸ਼ਰੂਮ ਸਪਲਾਈ ਸਥਿਤੀ ਅਤੇ ਰੀਸਟੌਕਿੰਗ',
+                '📦 Full Stock Inventory (Building-wise)': '📦 ਪੂਰੀ ਸਟਾਕ ਇਨਵੈਂਟਰੀ (ਇਮਾਰਤਵਾਰ)',
+                "Today's Cleaning & Restocking Tasks": 'ਅੱਜ ਦੇ ਸਫ਼ਾਈ ਅਤੇ ਰੀਸਟੌਕਿੰਗ ਕੰਮ',
+                '⏰ Set Restocking Reminder': '⏰ ਰੀਸਟੌਕਿੰਗ ਯਾਦ ਦਿਹਾਣੀ ਸੈੱਟ ਕਰੋ',
+                '🕒 Live Restocking Feed': '🕒 ਲਾਈਵ ਰੀਸਟੌਕਿੰਗ ਫੀਡ',
+                '📦 Stock Inventory': '📦 ਸਟਾਕ ਇਨਵੈਂਟਰੀ',
+                '🧻 Restocking Status': '🧻 ਰੀਸਟੌਕਿੰਗ ਸਥਿਤੀ',
+                '📋 My Complaints': '📋 ਮੇਰੀਆਂ ਸ਼ਿਕਾਇਤਾਂ',
+                '📷 Refill Photos': '📷 ਰਿਫਿਲ ਫੋਟੋ',
+                'Issues in Your Area': 'ਤੁਹਾਡੇ ਖੇਤਰ ਵਿੱਚ ਸਮੱਸਿਆਵਾਂ',
+                'My Complaints': 'ਮੇਰੀਆਂ ਸ਼ਿਕਾਇਤਾਂ',
+                'In Progress': 'ਪ੍ਰਗਤੀ ਵਿੱਚ',
+                // Inventory photo modal
+                'Select a washroom row to view the latest refill photos.': 'ਤਾਜ਼ਾ ਰਿਫਿਲ ਫੋਟੋ ਦੇਖਣ ਲਈ ਵਾਸ਼ਰੂਮ ਕਤਾਰ ਚੁਣੋ।',
+                'No supervisor refill photos found for this washroom yet.': 'ਇਸ ਵਾਸ਼ਰੂਮ ਲਈ ਹਾਲੇ ਰਿਫਿਲ ਫੋਟੋ ਉਪਲਬਧ ਨਹੀਂ।',
+                'Loading latest refill photos...': 'ਤਾਜ਼ਾ ਰਿਫਿਲ ਫੋਟੋ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...',
+                'No recent submission': 'ਕੋਈ ਤਾਜ਼ਾ ਸਬਮਿਸ਼ਨ ਨਹੀਂ',
+                // Reminder modal
+                'Restocking (Tissues, Soap, Sanitizer)': 'ਰੀਸਟੌਕਿੰਗ (ਟਿਸ਼ੂ, ਸਾਬਣ, ਸੈਨਿਟਾਈਜ਼ਰ)',
+                'Restocking (Tissues, Soap)': 'ਰੀਸਟੌਕਿੰਗ (ਟਿਸ਼ੂ, ਸਾਬਣ)',
+                'Every 2 Hours (Supervisor Sweep)': 'ਹਰ 2 ਘੰਟੇ (ਸੁਪਰਵਾਈਜ਼ਰ ਸਵੀਪ)',
+                'Every 4 Hours (High Traffic)': 'ਹਰ 4 ਘੰਟੇ (ਵੱਧ ਭੀੜ)',
+                'Every 8 Hours (Medium Traffic)': 'ਹਰ 8 ਘੰਟੇ (ਦਰਮਿਆਨੀ ਭੀੜ)',
+                'Every 12 Hours (Low Traffic)': 'ਹਰ 12 ਘੰਟੇ (ਘੱਟ ਭੀੜ)',
+                'Refilling Dispensers': 'ਡਿਸਪੈਂਸਰ ਭਰਨਾ',
+                'Once Daily': 'ਦਿਨ ਵਿੱਚ ਇੱਕ ਵਾਰ',
+                'Save Reminder': 'ਯਾਦ ਦਿਹਾਣੀ ਸੇਵ ਕਰੋ',
+                // Complaint categories
+                'Let AI Detect Automatically': 'AI ਨਾਲ ਆਪੇ ਪਛਾਣੋ',
+                'Hygiene / Supplies Empty': 'ਸਫ਼ਾਈ / ਸਪਲਾਈ ਖਤਮ',
+                'Appliance (AC/Fan/Geyser)': 'ਉਪਕਰਣ (AC/ਪੱਖਾ/ਗੀਜ਼ਰ)',
+                'False Reporting by Staff': 'ਸਟਾਫ ਵੱਲੋਂ ਝੂਠੀ ਰਿਪੋਰਟ',
+                'Cleaning Not Done': 'ਸਫ਼ਾਈ ਨਹੀਂ ਹੋਈ',
+                'Pest Control': 'ਕੀਟ ਨਿਯੰਤਰਣ',
+                'Internet/WiFi': 'ਇੰਟਰਨੈੱਟ/ਵਾਈਫਾਈ',
+                'Maintenance': 'ਰੱਖ-ਰਖਾਵ',
+                'Plumbing': 'ਪਾਈਪਲਾਈਨ',
+                'Electrical': 'ਬਿਜਲੀ ਸੰਬੰਧੀ',
+                'Furniture': 'ਫਰਨੀਚਰ',
+                'Security': 'ਸੁਰੱਖਿਆ',
+                'Cleaning': 'ਸਫ਼ਾਈ',
+                'Noise': 'ਰੌਲਾ',
+                'Other': 'ਹੋਰ',
+                // Task card badges
+                '⚠️ OVERDUE': '⚠️ ਦੇਰੀ',
+                'LOW STOCK': 'ਘੱਟ ਸਟਾਕ',
+                'Cleaned ✓': 'ਸਾਫ਼ ✓',
+                'Not cleaned': 'ਸਾਫ਼ ਨਹੀਂ',
+                // Empty states
+                'No tasks assigned': 'ਕੋਈ ਕੰਮ ਅਸਾਈਨ ਨਹੀਂ',
+                'No washrooms assigned': 'ਕੋਈ ਵਾਸ਼ਰੂਮ ਅਸਾਈਨ ਨਹੀਂ',
+                'No reminders set': 'ਕੋਈ ਯਾਦ ਦਿਹਾਣੀ ਸੈੱਟ ਨਹੀਂ',
+                'No pending issues in your area.': 'ਤੁਹਾਡੇ ਖੇਤਰ ਵਿੱਚ ਕੋਈ ਲੰਬਿਤ ਸਮੱਸਿਆ ਨਹੀਂ।',
+                'No restocking data yet': 'ਹਾਲੇ ਕੋਈ ਰੀਸਟੌਕਿੰਗ ਡੇਟਾ ਨਹੀਂ',
+                'All caught up!': 'ਸਭ ਠੀਕ ਹੈ!',
+                'Loading…': 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...',
+                // Buttons
+                'Mobile Push': 'ਮੋਬਾਈਲ ਪੁਸ਼',
+                'Portal': 'ਪੋਰਟਲ',
+                'Cancel': 'ਰੱਦ ਕਰੋ',
+                'Assign': 'ਅਸਾਈਨ ਕਰੋ',
+                'Close': 'ਬੰਦ ਕਰੋ',
+                'Load': 'ਲੋਡ ਕਰੋ',
+                // Extra missing phrases
+                'Sign In': 'ਸਾਈਨ ਇਨ',
+                'Forgot Password?': 'ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?',
+                'Request failed': 'ਬੇਨਤੀ ਅਸਫਲ',
+                'Change': 'ਬਦਲੋ',
+                'OK': 'ਠੀਕ ਹੈ',
+                'Yes': 'ਹਾਂ',
+                'No': 'ਨਹੀਂ',
             },
         };
 
@@ -2986,6 +3421,8 @@
                 approveds: 'स्वीकृत', by: 'द्वारा', time: 'समय', no: 'नहीं', yes: 'हाँ',
                 false: 'गलत', reporting: 'रिपोर्टिंग', portal: 'पोर्टल', mobile: 'मोबाइल',
                 frequency: 'आवृत्ति', every: 'हर', daily: 'दैनिक', hours: 'घंटे',
+                housekeeping: 'हाउसकीपिंग', tracker: 'ट्रैकर', sign: 'साइन', failed: 'विफल',
+                forgot: 'भूल गए', change: 'बदलें', cleaning: 'सफाई', ok: 'ठीक',
             },
             pa: {
                 admin: 'ਐਡਮਿਨ', supervisor: 'ਸੁਪਰਵਾਈਜ਼ਰ', staff: 'ਸਟਾਫ', resident: 'ਰਿਹਾਇਸ਼ੀ',
@@ -3005,6 +3442,8 @@
                 by: 'ਵੱਲੋਂ', time: 'ਸਮਾਂ', no: 'ਨਹੀਂ', yes: 'ਹਾਂ',
                 false: 'ਗਲਤ', reporting: 'ਰਿਪੋਰਟਿੰਗ', portal: 'ਪੋਰਟਲ', mobile: 'ਮੋਬਾਇਲ',
                 frequency: 'ਆਵ੍ਰਿੱਤੀ', every: 'ਹਰ', daily: 'ਰੋਜ਼ਾਨਾ', hours: 'ਘੰਟੇ',
+                housekeeping: 'ਹਾਊਸਕੀਪਿੰਗ', tracker: 'ਟ੍ਰੈਕਰ', sign: 'ਸਾਈਨ', failed: 'ਅਸਫਲ',
+                forgot: 'ਭੁੱਲ ਗਏ', change: 'ਬਦਲੋ', cleaning: 'ਸਫ਼ਾਈ', ok: 'ਠੀਕ',
             },
         };
 
@@ -3374,7 +3813,7 @@
             ],
         };
 
-        const H2_PANTRY_TYPES = new Set(['Refrigerator', 'Sink', 'Induction', 'Microwave', 'Water Cooler']);
+        const H2_PANTRY_TYPES = new Set(['Refrigerator', 'Sink', 'Induction', 'Microwave', 'Water Cooler', 'Pantry']);
 
         // —— A1-Bharti Academic Building ——
         const A1_BUILDING_NAME = 'A1-Bharti Academic Building';
@@ -3425,8 +3864,102 @@
             ],
         };
 
+        // —— A4-HDFC Innovation Hub ——
+        const A4_BUILDING_NAME = 'A4-HDFC Innovation Hub';
+        const A4_FLOORS = ['G', '1'];
+
+        const A4_GROUND_OFFICE_LABELS = ['4001', '4002', '4003', '4004', '4005', '4006', '4007', '4008', '4009'];
+
+        const A4_FACILITY_CONFIG = {
+            'G': [
+                { type: 'Lift Lobby', count: 1 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Robotics Lab', count: 1 },
+                { type: 'Tool Rack', count: 1 },
+                { type: 'Office', count: 9 },
+            ],
+            '1': [
+                { type: 'Corridor', count: 1 },
+                { type: 'Pantry', count: 1 },
+                { type: 'Washroom (Male)', count: 1 },
+                { type: 'Washroom (Female)', count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Room', count: 8 },
+                { type: 'Special Room', count: 2 },
+                { type: 'Phone Booth', count: 1 },
+            ],
+        };
+
+        // —— A2-Havells Building ——
+        const A2_BUILDING_NAME = 'A2-Havells Building';
+        const A2_FLOORS = ['G', '1', '2', '3', '4'];
+
+        const A2_GROUND_OFFICE_LABELS    = ['2001'];
+        const A2_FIRST_ROOM_LABELS       = ['2103'];
+        const A2_FIRST_SPECIAL_LABELS    = ['2102', '2101'];
+        const A2_FIRST_DEEPCLEAN_LABELS  = ['2104'];
+        const A2_SECOND_ROOM_LABELS      = ['2201', '2202', '2203'];
+        const A2_SECOND_DEEPCLEAN_LABELS = ['2204'];
+        const A2_THIRD_LAB_LABELS        = ['2301', '2302', '2303', '2304', '2305'];
+        const A2_THIRD_SPECIAL_LABELS    = ['2306'];
+        const A2_FOURTH_SPECIAL_LABELS   = ['2401'];
+        const A2_FOURTH_ROOM_LABELS      = ['2402','2403','2404','2405','2406','2407','2408','2409','2410',
+                                             '2411','2412','2413','2414','2415','2416','2417','2418','2419',
+                                             '2420','2421','2422','2423'];
+
+        const A2_FACILITY_CONFIG = {
+            'G': [
+                { type: 'Lobby',               count: 1 },
+                { type: 'Makerspace',          count: 1 },
+                { type: 'Office',              count: 1 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Lift Lobby',          count: 1 },
+            ],
+            '1': [
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Room',                count: 1 },
+                { type: 'Special Room',        count: 2 },
+                { type: 'Deep Clean Room',     count: 1 },
+                { type: 'Lift Lobby',          count: 1 },
+            ],
+            '2': [
+                { type: 'Lift Lobby',          count: 1 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Jefferies',           count: 1 },
+                { type: 'Room',                count: 3 },
+                { type: 'Deep Clean Room',     count: 1 },
+            ],
+            '3': [
+                { type: 'Lab',                 count: 5 },
+                { type: 'Special Room',        count: 1 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Lift Lobby',          count: 1 },
+            ],
+            '4': [
+                { type: 'Special Room',        count: 1 },
+                { type: 'Room',                count: 22 },
+                { type: 'Corridor',            count: 1 },
+                { type: 'Washroom (Male)',      count: 1 },
+                { type: 'Washroom (Female)',    count: 1 },
+                { type: 'Washroom (Inclusive)', count: 1 },
+            ],
+        };
+
         function getBuildingFacilityConfig(building) {
             if (building === A1_BUILDING_NAME) return A1_FACILITY_CONFIG;
+            if (building === A4_BUILDING_NAME) return A4_FACILITY_CONFIG;
+            if (building === A2_BUILDING_NAME) return A2_FACILITY_CONFIG;
             return H2_FACILITY_CONFIG;
         }
 
@@ -3518,8 +4051,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body || {}),
                 });
+                const contentType = res.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    return { ok: false, status: res.status, data: {}, error: 'Cannot reach the backend. Please open the app at http://localhost:3001' };
+                }
                 const data = await res.json().catch(() => ({}));
-                return { ok: res.ok, status: res.status, data, error: data?.error || 'Request failed' };
+                const errorFallback = res.status >= 500 ? 'Server error. Please try again later.'
+                    : res.status === 429 ? 'Too many attempts. Please wait before trying again.'
+                    : res.status === 400 ? 'Invalid input. Please check your details.'
+                    : 'Login failed. Please try again.';
+                return { ok: res.ok, status: res.status, data, error: data?.error || errorFallback };
             } catch (_err) {
                 return { ok: false, status: 0, data: null, error: 'Network error. Please try again.' };
             }
@@ -3546,6 +4087,7 @@
             const password = document.getElementById('loginPassword').value;
 
             if (!selectedLoginTrack) { showToast('Please choose login type first'); return; }
+            if (!email) { showToast('Please enter your email address'); return; }
             if (!password) { showToast('Please enter your password'); return; }
 
             const login = await authPost('/auth/login', { email, password });
@@ -3796,7 +4338,29 @@
             let groundRoomIndex = 0;
             return config.flatMap(({ type, count }) => Array.from({ length: count }, (_, index) => {
                 let facilityNumber;
-                if (type === 'Room') {
+                if (building === A4_BUILDING_NAME) {
+                    if (type === 'Office') {
+                        facilityNumber = A4_GROUND_OFFICE_LABELS[index];
+                    } else if (type === 'Room') {
+                        facilityNumber = String(4102 + index);
+                    } else if (type === 'Special Room') {
+                        facilityNumber = index === 0 ? '4101' : '4110';
+                    } else {
+                        facilityNumber = index + 1;
+                    }
+                } else if (building === A2_BUILDING_NAME) {
+                    if      (floor === 'G' && type === 'Office')          facilityNumber = A2_GROUND_OFFICE_LABELS[index];
+                    else if (floor === '1' && type === 'Room')            facilityNumber = A2_FIRST_ROOM_LABELS[index];
+                    else if (floor === '1' && type === 'Special Room')    facilityNumber = A2_FIRST_SPECIAL_LABELS[index];
+                    else if (floor === '1' && type === 'Deep Clean Room') facilityNumber = A2_FIRST_DEEPCLEAN_LABELS[index];
+                    else if (floor === '2' && type === 'Room')            facilityNumber = A2_SECOND_ROOM_LABELS[index];
+                    else if (floor === '2' && type === 'Deep Clean Room') facilityNumber = A2_SECOND_DEEPCLEAN_LABELS[index];
+                    else if (floor === '3' && type === 'Lab')             facilityNumber = A2_THIRD_LAB_LABELS[index];
+                    else if (floor === '3' && type === 'Special Room')    facilityNumber = A2_THIRD_SPECIAL_LABELS[index];
+                    else if (floor === '4' && type === 'Special Room')    facilityNumber = A2_FOURTH_SPECIAL_LABELS[index];
+                    else if (floor === '4' && type === 'Room')            facilityNumber = A2_FOURTH_ROOM_LABELS[index];
+                    else                                                  facilityNumber = index + 1;
+                } else if (type === 'Room') {
                     if (building === A1_BUILDING_NAME && floor === 'G') {
                         facilityNumber = A1_GROUND_ROOM_LABELS[groundRoomIndex++];
                     } else if (building === A1_BUILDING_NAME) {
@@ -3871,6 +4435,14 @@
         const WASHROOM_FACILITY_TYPES = new Set(['Washroom', 'Washroom (Male)', 'Washroom (Female)', 'Washroom (Inclusive)']);
 
         function formatFacilityNumber(row) {
+            if (row.building === A4_BUILDING_NAME) {
+                return String(row.facility_number);
+            }
+            if (row.building === A2_BUILDING_NAME) {
+                const labelledTypes = new Set(['Office', 'Room', 'Special Room', 'Deep Clean Room', 'Lab']);
+                if (labelledTypes.has(row.facility_type)) return String(row.facility_number);
+                return row.facility_number;
+            }
             if (row.building === A1_BUILDING_NAME) {
                 if (row.floor === 'G' && row.facility_type === 'Room') {
                     return String(row.facility_number); // e.g. A1001A
@@ -4006,7 +4578,10 @@
             activeFacilityBuilding = buildingSelect.value;
             facilityFallbackState = {};
 
-            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS : H2_FLOORS;
+            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                         : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
+                         : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
+                         : H2_FLOORS;
             floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
             floorSelect.value = floors[0];
 
@@ -4021,7 +4596,10 @@
             activeFacilityBuilding = buildingSelect.value;
             facilityFallbackState = {};
 
-            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS : H2_FLOORS;
+            const floors = activeFacilityBuilding === A1_BUILDING_NAME ? A1_FLOORS
+                         : activeFacilityBuilding === A4_BUILDING_NAME ? A4_FLOORS
+                         : activeFacilityBuilding === A2_BUILDING_NAME ? A2_FLOORS
+                         : H2_FLOORS;
             floorSelect.innerHTML = floors.map(f => `<option value="${f}">${f}</option>`).join('');
             floorSelect.value = floors[0];
 

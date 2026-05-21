@@ -4,6 +4,38 @@
  */
 require('dotenv').config();
 
+// Parse DATABASE_URL (provided by Railway, Render, Heroku etc.)
+function parseDbUrl(url) {
+    if (!url) return null;
+    try {
+        const u = new URL(url);
+        return {
+            host: u.hostname,
+            port: parseInt(u.port || '5432'),
+            database: u.pathname.replace(/^\//, ''),
+            user: u.username,
+            password: u.password,
+        };
+    } catch (_) { return null; }
+}
+
+// Parse REDIS_URL (provided by Railway, Render etc.)
+function parseRedisUrl(url) {
+    if (!url) return null;
+    try {
+        const u = new URL(url);
+        return {
+            host: u.hostname,
+            port: parseInt(u.port || '6379'),
+            password: u.password || undefined,
+            db: parseInt(u.pathname.replace(/^\//, '') || '0'),
+        };
+    } catch (_) { return null; }
+}
+
+const dbFromUrl = parseDbUrl(process.env.DATABASE_URL);
+const redisFromUrl = parseRedisUrl(process.env.REDIS_URL);
+
 const config = {
     app: {
         port: parseInt(process.env.APP_PORT || process.env.PORT || '3001'),
@@ -19,23 +51,25 @@ const config = {
     },
 
     db: {
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT || '5432'),
-        database: process.env.DB_NAME || 'ilgc_tracker',
-        user: process.env.DB_USER || 'ilgc_admin',
-        password: process.env.DB_PASSWORD || 'password',
+        host: dbFromUrl?.host || process.env.DB_HOST || 'localhost',
+        port: dbFromUrl?.port || parseInt(process.env.DB_PORT || '5432'),
+        database: dbFromUrl?.database || process.env.DB_NAME || 'ilgc_tracker',
+        user: dbFromUrl?.user || process.env.DB_USER || 'ilgc_admin',
+        password: dbFromUrl?.password || process.env.DB_PASSWORD || 'password',
         pool: {
             min: parseInt(process.env.DB_POOL_MIN || '2'),
-            max: parseInt(process.env.DB_POOL_MAX || '20'),
+            max: parseInt(process.env.DB_POOL_MAX || '10'),
         },
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+        // Auto-enable SSL when DATABASE_URL is present (cloud providers require it)
+        ssl: (process.env.DATABASE_URL || process.env.DB_SSL === 'true')
+            ? { rejectUnauthorized: false } : false,
     },
 
     redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD || undefined,
-        db: parseInt(process.env.REDIS_DB || '0'),
+        host: redisFromUrl?.host || process.env.REDIS_HOST || 'localhost',
+        port: redisFromUrl?.port || parseInt(process.env.REDIS_PORT || '6379'),
+        password: redisFromUrl?.password || process.env.REDIS_PASSWORD || undefined,
+        db: redisFromUrl?.db || parseInt(process.env.REDIS_DB || '0'),
     },
 
     ai: {

@@ -5,16 +5,21 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 
 const config = require('./index');
 
+const connection = process.env.DATABASE_URL
+    ? { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }
+    : {
+        host: config.db.host,
+        port: config.db.port,
+        database: config.db.database,
+        user: config.db.user,
+        password: config.db.password,
+        ssl: config.db.ssl,
+    };
+
 module.exports = {
     development: {
         client: 'pg',
-        connection: {
-            host: config.db.host,
-            port: config.db.port,
-            database: config.db.database,
-            user: config.db.user,
-            password: config.db.password,
-        },
+        connection,
         pool: config.db.pool,
         migrations: {
             directory: '../database/migrations',
@@ -27,14 +32,7 @@ module.exports = {
 
     production: {
         client: 'pg',
-        connection: {
-            host: config.db.host,
-            port: config.db.port,
-            database: config.db.database,
-            user: config.db.user,
-            password: config.db.password,
-            ssl: config.db.ssl,
-        },
+        connection,
         pool: config.db.pool,
         migrations: {
             directory: '../database/migrations',
