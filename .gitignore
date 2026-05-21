@@ -20,34 +20,16 @@ venv/
 logs/
 *.log
 **/*.log
+backend/logs/
 
 # OS files
 .DS_Store
 **/.DS_Store
 Thumbs.db
 
-# Docker volumes / runtime data
+# Runtime uploads
 backend/uploads/
-ai-service/models/
 
-# APK build outputs
+# APK / AAB build outputs
 *.apk
 *.aab
-
-# Mobile build artifacts
-HostelCareApp/android/.gradle/
-HostelCareApp/android/app/build/
-HostelCareApp/android/build/
-HostelCareApp/ios/build/
-HostelCareApp/ios/Pods/
-mobile-src/android/.gradle/
-mobile-src/android/app/build/
-mobile-src/android/build/
-mobile-src/ios/build/
-mobile-src/ios/Pods/
-
-# SSL certificates (local dev only)
-certbot/conf/live/
-certbot/conf/archive/
-certbot/conf/renewal/
-nginx/ssl/

@@ -1,9 +1,0 @@
-{"level":"error","message":"Redis: Max retry attempts reached","service":"ilgc-api","timestamp":"2026-04-28 12:00:54.868"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 12:01:03.877"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 12:01:03.877"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 14:01:47.477"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 14:01:47.478"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 16:17:28.767"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 16:17:28.767"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543220","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 18:21:54.537"}
-{"error":"SMS provider is not configured","level":"error","message":"Supervisor checklist reminder SMS send failed","phone":"+919876543221","provider":"none","service":"ilgc-api","timestamp":"2026-04-28 18:21:54.537"}
